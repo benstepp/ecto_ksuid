@@ -8,15 +8,15 @@ defmodule Ecto.Ksuid.Options do
         }
 
   @spec compile(keyword()) :: t()
-  def compile(params) do
+  def compile(opts \\ []) do
     %__MODULE__{
-      prefix: prefix(params)
+      prefix: prefix(opts)
     }
   end
 
   @spec default() :: t()
   def default() do
-    compile([])
+    compile()
   end
 
   defp prefix(opts) do
