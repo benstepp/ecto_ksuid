@@ -10,4 +10,4 @@ _ = Ecto.Adapters.Postgres.storage_down(Ecto.Ksuid.TestRepo.config())
 Ecto.Adapters.SQL.Sandbox.mode(Ecto.Ksuid.TestRepo, :manual)
 
 Logger.configure(level: :info)
-# Ecto.Adapters.Postgres.structure_dump(".", Ecto.Ksuid.TestRepo.config())
+Ecto.Adapters.Postgres.structure_dump("./test/support", Ecto.Ksuid.TestRepo.config())
