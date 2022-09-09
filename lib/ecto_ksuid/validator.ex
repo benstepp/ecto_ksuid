@@ -5,8 +5,7 @@ defmodule Ecto.Ksuid.Validator do
 
   alias Ecto.Ksuid.Options
 
-  @spec is_valid?(String.t(), Options.t()) :: {:ok, String.t()} | :error
-  @spec is_valid?(any(), Options.t()) :: :error
+  @spec is_valid?(String.t() | any(), Options.t()) :: {:ok, String.t()} | :error
   def is_valid?(value, options) do
     with :ok <- validate_prefix(value, options),
          ksuid <- Ecto.Ksuid.remove_prefix(value, options),
@@ -14,8 +13,7 @@ defmodule Ecto.Ksuid.Validator do
          do: {:ok, value}
   end
 
-  @spec is_valid?(String.t()) :: {:ok, String.t()} | :error
-  @spec is_valid?(any()) :: :error
+  @spec is_valid?(String.t() | any()) :: {:ok, String.t()} | :error
   def is_valid?(value) when is_binary(value) do
     with :ok <- validate_length(value),
          :ok <- validate_format(value),

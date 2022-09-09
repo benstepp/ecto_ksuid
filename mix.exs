@@ -27,8 +27,9 @@ defmodule EctoKsuid.MixProject do
     [
       {:ecto_sql, ">= 3.0.0"},
       {:ksuid, "0.1.2"},
-      {:postgrex, ">= 0.14.0", only: [:dev, :test]},
-      {:credo, "1.6.7", only: [:dev, :test]}
+      {:postgrex, "0.16.4", only: [:dev, :test]},
+      {:dialyxir, "1.2.0", only: [:dev], runtime: false},
+      {:credo, "1.6.7", only: [:dev]}
     ]
   end
 end

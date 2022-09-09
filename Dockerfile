@@ -19,7 +19,8 @@ WORKDIR /app
 
 COPY ./mix.exs ./mix.lock ./
 RUN mix deps.get
-RUN mix deps.compile
+RUN mix deps.compile && MIX_ENV=test mix deps.compile
+RUN mix dialyzer --plt
 
 COPY ./ .
 RUN mix deps.get
