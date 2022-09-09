@@ -1,4 +1,6 @@
 defmodule Ecto.Ksuid.TestMigration do
+  @moduledoc false
+
   use Ecto.Migration
 
   def change() do

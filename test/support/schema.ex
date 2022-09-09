@@ -1,4 +1,6 @@
 defmodule Ecto.Ksuid.TestSchema do
+  @moduledoc false
+
   use Ecto.Schema
 
   @primary_key {:id, Ecto.Ksuid, autogenerate: true, prefix: "test_"}
@@ -12,6 +14,8 @@ defmodule Ecto.Ksuid.TestSchema do
 end
 
 defmodule Ecto.Ksuid.RawTestSchema do
+  @moduledoc false
+
   use Ecto.Schema
 
   @primary_key {:id, :string, []}

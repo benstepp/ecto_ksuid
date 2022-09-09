@@ -1,4 +1,8 @@
 defmodule Ecto.Ksuid.Options do
+  @moduledoc """
+  Struct containing validated options
+  """
+
   defstruct [
     :prefix
   ]

@@ -1,4 +1,8 @@
 defmodule Ecto.Ksuid.DataCase do
+  @moduledoc """
+  Test Case template providing database access
+  """
+
   use ExUnit.CaseTemplate
 
   using do

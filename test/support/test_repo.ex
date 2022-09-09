@@ -1,4 +1,6 @@
 defmodule Ecto.Ksuid.TestRepo do
+  @moduledoc false
+
   use Ecto.Repo,
     otp_app: :ecto_ksuid,
     adapter: Ecto.Adapters.Postgres

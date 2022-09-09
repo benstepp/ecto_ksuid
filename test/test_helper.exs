@@ -9,4 +9,5 @@ _ = Ecto.Adapters.Postgres.storage_down(Ecto.Ksuid.TestRepo.config())
 :ok = Ecto.Migrator.up(Ecto.Ksuid.TestRepo, 0, Ecto.Ksuid.TestMigration, log: false)
 Ecto.Adapters.SQL.Sandbox.mode(Ecto.Ksuid.TestRepo, :manual)
 
+Logger.configure(level: :info)
 # Ecto.Adapters.Postgres.structure_dump(".", Ecto.Ksuid.TestRepo.config())

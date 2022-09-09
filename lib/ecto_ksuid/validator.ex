@@ -1,4 +1,8 @@
 defmodule Ecto.Ksuid.Validator do
+  @moduledoc """
+  Validates if a given value is valid
+  """
+
   alias Ecto.Ksuid.Options
 
   @spec is_valid?(String.t(), Options.t()) :: {:ok, String.t()} | :error
