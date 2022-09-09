@@ -1,29 +1,12 @@
-defmodule Ecto.Ksuid.TestSchema do
-  @moduledoc false
-
-  use Ecto.Schema
-
-  @primary_key {:id, Ecto.Ksuid, autogenerate: true, prefix: "test_"}
-  schema "test_schemas" do
-  end
-
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> Ecto.Changeset.cast(params, [:id])
-  end
-end
-
 defmodule Ecto.Ksuid.RawTestSchema do
-  @moduledoc false
+  @moduledoc """
+  Raw access to the strings stored in the database
+  """
 
   use Ecto.Schema
 
   @primary_key {:id, :string, []}
   schema "test_schemas" do
-  end
-
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> Ecto.Changeset.cast(params, [:id])
+    field(:public_id, :string)
   end
 end

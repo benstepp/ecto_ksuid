@@ -8,8 +8,9 @@ defmodule Ecto.Ksuid.DataCase do
   using do
     quote do
       alias Ecto.Ksuid, as: Type
+      alias Ecto.Ksuid.TestRepo, as: Repo
       alias Ecto.Ksuid.Options
-      alias Ecto.Ksuid.TestRepo
+      alias Ecto.Ksuid.Validator
       alias Ecto.Ksuid.TestSchema
       alias Ecto.Ksuid.RawTestSchema
 
@@ -28,6 +29,35 @@ defmodule Ecto.Ksuid.DataCase do
   end
 
   def ksuid() do
-    Ksuid.generate()
+    Ecto.Ksuid.generate()
+  end
+
+  @doc """
+  Changeset to make testing integration schemas easier.
+
+  It casts all fields that were defined on a given association.
+  """
+  @spec changeset(struct(), map()) :: Ecto.Changeset.t()
+  def changeset(struct, params \\ %{})
+
+  def changeset(%struct_name{} = struct, params) do
+    struct
+    |> Ecto.Changeset.cast(params, struct_name.__schema__(:fields))
+  end
+
+  @doc """
+  A helper that transforms changeset errors into a map of messages.
+
+      assert {:error, changeset} = Accounts.create_user(%{password: "short"})
+      assert "password is too short" in errors_on(changeset).password
+      assert %{password: ["password is too short"]} = errors_on(changeset)
+
+  """
+  def errors_on(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {message, opts} ->
+      Regex.replace(~r"%{(\w+)}", message, fn _, key ->
+        opts |> Keyword.get(String.to_existing_atom(key), key) |> to_string()
+      end)
+    end)
   end
 end

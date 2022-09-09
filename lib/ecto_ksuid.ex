@@ -62,7 +62,7 @@ defmodule Ecto.Ksuid do
 
   @impl Ecto.ParameterizedType
   def autogenerate(options) do
-    "#{options.prefix}#{Ksuid.generate()}"
+    "#{options.prefix}#{generate()}"
   end
 
   def remove_prefix(value, options) do
@@ -73,5 +73,9 @@ defmodule Ecto.Ksuid do
       prefix ->
         String.replace_leading(value, prefix, "")
     end
+  end
+
+  def generate() do
+    Ksuid.generate()
   end
 end

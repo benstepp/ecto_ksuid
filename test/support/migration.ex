@@ -6,6 +6,13 @@ defmodule Ecto.Ksuid.TestMigration do
   def change() do
     create table(:test_schemas, primary_key: false) do
       add(:id, :char, size: 27, primary_key: true)
+      add(:public_id, :char, size: 27)
+    end
+
+    create table(:test_associations, primary_key: false) do
+      add(:id, :char, size: 27, primary_key: true)
+      add(:public_id, :char, size: 27)
+      add(:association_id, references(:test_schemas))
     end
   end
 end
