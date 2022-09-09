@@ -5,17 +5,15 @@ defmodule Ecto.Ksuid do
 
   use Ecto.ParameterizedType
 
-  @behaviour Ecto.ParameterizedType
-
-  @impl Ecto.ParamterizedType
+  @impl Ecto.ParameterizedType
   def init(opts) do
     Ecto.Ksuid.Options.compile(opts)
   end
 
-  @impl Ecto.ParamterizedType
+  @impl Ecto.ParameterizedType
   def type(_options), do: :string
 
-  @impl Ecto.ParamterizedType
+  @impl Ecto.ParameterizedType
   def cast(value, options) when is_binary(value) do
     Ecto.Ksuid.Validator.is_valid?(value, options)
   end
@@ -28,7 +26,7 @@ defmodule Ecto.Ksuid do
     :error
   end
 
-  @impl Ecto.ParamterizedType
+  @impl Ecto.ParameterizedType
   def dump(value, _loader, options) when is_binary(value) do
     value
     |> remove_prefix(options)
@@ -43,21 +41,26 @@ defmodule Ecto.Ksuid do
     :error
   end
 
-  @impl Ecto.ParamterizedType
+  @impl Ecto.ParameterizedType
   def load(value, _loader, options) when is_binary(value) do
-    {:ok, "#{options.prefix}#{value}"}
+    case Ecto.Ksuid.Validator.is_valid?(value) do
+      {:ok, value} ->
+        {:ok, "#{options.prefix}#{value}"}
+
+      :error ->
+        :error
+    end
   end
 
   def load(value, _loader, _options) when is_nil(value) do
     {:ok, value}
   end
 
-  @impl Ecto.ParamterizedType
-  def equal?(a, b, _options) do
-    a == b
+  def load(_value, _loader, _options) do
+    :error
   end
 
-  @impl Ecto.ParamterizedType
+  @impl Ecto.ParameterizedType
   def autogenerate(options) do
     "#{options.prefix}#{Ksuid.generate()}"
   end
