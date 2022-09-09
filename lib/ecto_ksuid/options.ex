@@ -1,6 +1,9 @@
 defmodule Ecto.Ksuid.Options do
   @moduledoc """
   Struct containing validated options
+
+  This is used internally to generate the options used by the
+  callbacks of the `Ecto.ParameterizedType` behaviour.
   """
 
   defstruct [
@@ -11,13 +14,21 @@ defmodule Ecto.Ksuid.Options do
           prefix: String.t()
         }
 
+  @doc """
+  Compiles Ecto.Ksuid.Options given a keyword list of opts
+  """
   @spec compile(keyword()) :: t()
-  def compile(opts \\ []) do
+  def compile(opts \\ [])
+
+  def compile(opts) when is_list(opts) do
     %__MODULE__{
       prefix: prefix(opts)
     }
   end
 
+  @doc """
+  Returns the default options for Ecto.Ksuid
+  """
   @spec default() :: t()
   def default() do
     compile()

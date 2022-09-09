@@ -1,21 +1,61 @@
-# EctoKsuid
+# ecto_ksuid
 
-**TODO: Add description**
+![License MIT](https://img.shields.io/badge/license-MIT-brightgreen "License MIT")
+
+## Overview
+
+`Ecto.Ksuid` allows seamless usage of ksuids with ecto in your application.
+
+## Documentation
+
+Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ecto_ksuid` to your list of dependencies in `mix.exs`:
+1. Add `:ecto_ksuid` to your list of dependencies in `mix.exs`
 
-```elixir
-def deps do
-  [
-    {:ecto_ksuid, "~> 0.1.0"}
-  ]
-end
-```
+    ```elixir
+    def deps do
+      [
+        # ...
+        {:ecto_ksuid, "~> 0.1.0"}
+      ]
+    end
+    ```
+2. Add columns to your database
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/ecto_ksuid>.
+    ```bash
+    mix deps.get
+    ```
 
+## Usage
+
+1. Add columns to your database
+
+    ```elixir
+    defmodule MyApp.Repo.Migrations.AddPublicIdToUsers do
+      use Ecto.Migration
+
+      def change do
+        alter table(:users) do
+          add :public_id, Ecto.Ksuid.column()
+        end
+      end
+    end
+    ```
+
+2. Add columns to your schema
+
+    ```elixir
+    defmodule MyApp.User do
+      use Ecto.Schema
+
+      schema "users" do
+        # ...
+        field :public_id, Ecto.Ksuid
+      end
+    end
+    ```
+## Guides
+
+using ksuid as default
