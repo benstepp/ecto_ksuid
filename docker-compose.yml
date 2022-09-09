@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: './'
+      dockerfile: Dockerfile
+    command: bash
+    tty: true
+    volumes:
+      - ./:/app
+      - /app/deps
+      - /app/_build
+    depends_on:
+      - postgres
+  postgres:
+    image: 'postgres:14.5'
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+volumes:
+  postgres_data:
