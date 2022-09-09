@@ -49,4 +49,11 @@ defmodule Ecto.Ksuid.DumpTest do
 
     assert {:ok, ^ksuid} = Type.dump(ksuid, @dumper, options)
   end
+
+  test "dump/3 errors when passed an invalid value" do
+    value = {}
+    options = Options.default()
+
+    assert :error = Type.dump(value, @dumper, options)
+  end
 end

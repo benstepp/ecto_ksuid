@@ -10,6 +10,13 @@ defmodule EctoKsuid.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       source_url: "https://github.com/benstepp/ecto_ksuid",
       homepage_url: "https://github.com/benstepp/ecto_ksuid",
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
       deps: deps(),
       docs: docs()
     ]
@@ -33,7 +40,8 @@ defmodule EctoKsuid.MixProject do
       {:postgrex, "0.16.4", only: [:dev, :test]},
       {:credo, "1.6.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "1.2.0", only: [:dev], runtime: false},
-      {:ex_doc, "0.28.5", only: [:dev], runtime: false}
+      {:ex_doc, "0.28.5", only: [:dev], runtime: false},
+      {:excoveralls, "0.14.6", only: [:test]}
     ]
   end
 
