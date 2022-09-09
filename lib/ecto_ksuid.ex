@@ -10,7 +10,7 @@ defmodule Ecto.Ksuid do
     |> Enum.into(%{})
   end
 
-  def type(_params), do: :"char(27)"
+  def type(_params), do: :string
 
   def cast(value, _params) do
     {:ok, value}
@@ -46,17 +46,25 @@ defmodule Ecto.Ksuid do
     "#{prefix(params)}#{Ksuid.generate()}"
   end
 
-  defp remove_prefix(id, params) do
-    id
-    |> String.replace_leading(prefix(params), "")
+  defp remove_prefix(value, params) do
+    case prefix(params) do
+      "" ->
+        value
+
+      prefix ->
+        String.replace_leading(value, prefix, "")
+    end
   end
 
   defp prefix(params) do
     params
     |> Map.get(:prefix)
     |> case do
-      nil -> ""
-      val -> "#{val}_"
+      val when is_binary(val) ->
+        val
+
+      _ ->
+        ""
     end
   end
 
