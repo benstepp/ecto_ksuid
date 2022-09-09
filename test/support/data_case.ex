@@ -4,6 +4,7 @@ defmodule Ecto.Ksuid.DataCase do
   using do
     quote do
       alias Ecto.Ksuid, as: Type
+      alias Ecto.Ksuid.Options
       alias Ecto.Ksuid.TestRepo
       alias Ecto.Ksuid.TestSchema
       alias Ecto.Ksuid.RawTestSchema

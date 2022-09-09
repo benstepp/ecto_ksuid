@@ -5,73 +5,70 @@ defmodule Ecto.Ksuid do
 
   use Ecto.ParameterizedType
 
+  @behaviour Ecto.ParameterizedType
+
+  @impl Ecto.ParamterizedType
   def init(opts) do
-    opts
-    |> Enum.into(%{})
+    Ecto.Ksuid.Options.compile(opts)
   end
 
-  def type(_params), do: :string
+  @impl Ecto.ParamterizedType
+  def type(_options), do: :string
 
-  def cast(value, _params) do
+  @impl Ecto.ParamterizedType
+  def cast(value, options) when is_binary(value) do
+    Ecto.Ksuid.Validator.is_valid?(value, options)
+  end
+
+  def cast(value, _options) when is_nil(value) do
     {:ok, value}
   end
 
-  def dump(value, _loader, params) when is_binary(value) do
-    value
-    |> remove_prefix(params)
-    |> validate_length()
-  end
-
-  def dump(value, _loader, _params) when is_nil(value) do
-    {:ok, value}
-  end
-
-  def dump(_value, _loader, _params) do
+  def cast(_value, _options) do
     :error
   end
 
-  def load(value, _loader, params) when is_binary(value) do
-    {:ok, "#{prefix(params)}#{value}"}
+  @impl Ecto.ParamterizedType
+  def dump(value, _loader, options) when is_binary(value) do
+    value
+    |> remove_prefix(options)
+    |> Ecto.Ksuid.Validator.is_valid?()
   end
 
-  def load(value, _loader, _params) when is_nil(value) do
+  def dump(value, _loader, _options) when is_nil(value) do
     {:ok, value}
   end
 
-  def equal?(a, b, _params) do
+  def dump(_value, _loader, _options) do
+    :error
+  end
+
+  @impl Ecto.ParamterizedType
+  def load(value, _loader, options) when is_binary(value) do
+    {:ok, "#{options.prefix}#{value}"}
+  end
+
+  def load(value, _loader, _options) when is_nil(value) do
+    {:ok, value}
+  end
+
+  @impl Ecto.ParamterizedType
+  def equal?(a, b, _options) do
     a == b
   end
 
-  def autogenerate(params) do
-    "#{prefix(params)}#{Ksuid.generate()}"
+  @impl Ecto.ParamterizedType
+  def autogenerate(options) do
+    "#{options.prefix}#{Ksuid.generate()}"
   end
 
-  defp remove_prefix(value, params) do
-    case prefix(params) do
+  def remove_prefix(value, options) do
+    case options.prefix do
       "" ->
         value
 
       prefix ->
         String.replace_leading(value, prefix, "")
-    end
-  end
-
-  defp prefix(params) do
-    params
-    |> Map.get(:prefix)
-    |> case do
-      val when is_binary(val) ->
-        val
-
-      _ ->
-        ""
-    end
-  end
-
-  defp validate_length(ksuid) do
-    case String.length(ksuid) == 27 do
-      true -> {:ok, ksuid}
-      false -> :error
     end
   end
 end
