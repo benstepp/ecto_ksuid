@@ -2,9 +2,19 @@
 
 ![License MIT](https://img.shields.io/badge/license-MIT-brightgreen "License MIT")
 
-## Overview
+`Ecto.Ksuid` allows seamless usage of
+[ksuids](https://github.com/segmentio/ksuid) with `:ecto` in your application.
+To get a better idea of what ksuids are, and how they came to be I highly
+recommend reading [A breif History of the
+UUID](https://segment.com/blog/a-brief-history-of-the-uuid/)
 
-`Ecto.Ksuid` allows seamless usage of ksuids with ecto in your application.
+> [Ksuid] borrows core ideas from the ubiquitous UUID standard, adding time-based
+> ordering and more friendly representation formats.
+
+Additionally, `Ecto.Ksuid` allows easy addition of a `:prefix` to the ksuid
+that are available at runtime. This generates developer friendly ids much like
+stripe's object prefixed ids in your elixir application. (ie:
+`"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`)
 
 ## Documentation
 
@@ -28,7 +38,10 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
     mix deps.get
     ```
 
-## Usage
+## Basic Usage
+
+`Ecto.Ksuid` is just a custom `Ecto.ParameterizedType` and can be used in your
+application just like any other Ecto type.
 
 1. Add columns to your database
 
@@ -44,7 +57,7 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
     end
     ```
 
-2. Add columns to your schema
+2. Add fields to your schema
 
     ```elixir
     defmodule MyApp.User do
@@ -58,4 +71,7 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
     ```
 ## Guides
 
-using ksuid as default
+For more details on how to use this library, check out the guides:
+
+* [Using Ksuid as the Default](using_ksuid_as_default.md)
+* [Configuring Prefix](configuring_prefix.md)

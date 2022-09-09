@@ -1,11 +1,11 @@
 # Configuring a Ksuid Prefix
 
 It may be desirable to add a prefix to your IDs in your application's runtime.
-This makes logging and debugging a little more develoer friendly.
+This makes logging and debugging a little more developer friendly.
 
-Similar to stripe's ids:
+This is similar to stripe's object prefixed ids:
 
-* "ch_asdfghjklassdfghjkl"
+* `"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`
 
 ## Allowed Values
 
@@ -59,12 +59,22 @@ end
 ```elixir
 defmodule MyApp.Schema do
   defmacro __using__(opts \\ []) do
+    options = Keyword.merge(opts, autogenerate: true)
+
     quote do
       use Ecto.Schema
 
-      @primary_key {:id, Ecto.Ksuid, autogenerate: true}
+      @primary_key {:id, Ecto.Ksuid, unquote(options)}
       @foreign_key_type Ecto.Ksuid
     end
+  end
+end
+
+defmodule MyApp.User do
+  use MyApp.Schema, prefix: "user_"
+
+  schema "users" do
+    # ...
   end
 end
 ```
