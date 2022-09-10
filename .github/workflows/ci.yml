@@ -68,8 +68,10 @@ jobs:
     steps:
       - name: pwd
         run: |
+          echo 'pwd'
           pwd
-          ls
+          echo 'ls'
+          ls -lah
 
       - name: mix format
         run: mix format --check-formatted
