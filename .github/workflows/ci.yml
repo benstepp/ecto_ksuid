@@ -72,6 +72,8 @@ jobs:
           pwd
           echo 'ls'
           ls -lah
+          echo 'ls ..'
+          ls .. -lah
 
       - name: mix format
         run: mix format --check-formatted
