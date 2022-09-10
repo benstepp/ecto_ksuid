@@ -22,47 +22,36 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Retrieve Mix Dependencies Cache
-        uses: actions/cache@v2
-        id: deps-cache
-        with:
-          path: deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-
-
-      - name: Retrieve Dependency Build Cache
-        uses: actions/cache@v2
-        id: deps-build-cache
-        with:
-          path: |
-            - _build/**
-            - !_build/dev/lib/ecto_ksuid
-            - !_build/test/lib/ecto_ksuid
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-
-
-      - name: Retrieve Application Build Cache
-        uses: actions/cache@v2
-        id: app-build-cache
-        with:
-          path: |
-            - _build/dev/lib/ecto_ksuid
-            - _build/test/lib/ecto_ksuid
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-app-build-cache-${{ env.CACHE_VERSION }}-${{ github.sha }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-app-build-cache-
-
       - name: Hex/Rebar
         run: |
           mix local.hex --force
           mix local.rebar --force
 
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v2
+        id: deps-cache
+        with:
+          path: deps/**
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps
+
       - name: Install Mix Depenencies
-        if: steps.mix-deps-cache.outputs.cache-hit != 'true'
+        if: steps.deps-cache.outputs.cache-hit != 'true'
         run: |
           mix deps.get
+
+      - name: Retrieve Deps Build Cache
+        uses: actions/cache@v2
+        id: deps-build-cache
+        with:
+          path: |
+            - _build/**
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
 
       - name: Compile Dependencies
         if: steps.deps-build-cache.outputs.cache-hit != 'true'
@@ -71,8 +60,21 @@ jobs:
           MIX_ENV=dev mix deps.compile
           MIX_ENV=dev mix dialyzer --plt
 
+      - name: Retrieve App Build Cache
+        uses: actions/cache@v2
+        id: app-build-cache
+        with:
+          path: |
+            - _build_app/**
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}-${{ hashFiles('lib/**', 'test/**') }}
+          restore-keys: |
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
+
       - name: Compile
         if: steps.app-build-cache.outputs.cache-hit != 'true'
+        env:
+          MIX_BUILD_ROOT: '_build_app'
         run: mix compile
 
   format:
@@ -88,37 +90,41 @@ jobs:
         id: deps-cache
         with:
           path: deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps
 
-      - name: Retrieve Dependency Build Cache
+      - name: Retrieve Deps Build Cache
         uses: actions/cache@v2
         id: deps-build-cache
         with:
           path: |
             - _build/**
-            - !_build/dev/lib/ecto_ksuid
-            - !_build/test/lib/ecto_ksuid
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-build-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-build-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-build
 
-      - name: Retrieve Application Build Cache
+      - name: Retrieve App Build Cache
         uses: actions/cache@v2
         id: app-build-cache
         with:
           path: |
-            - _build/dev/lib/ecto_ksuid
-            - _build/test/lib/ecto_ksuid
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-app-build-cache-${{ env.CACHE_VERSION }}-${{ github.sha }}
+            - _build_app/**
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}-${{ hashFiles('lib/**', 'test/**') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-app-build-cache-
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp
 
       - name: Hex/Rebar
         run: |
           mix local.hex --force
           mix local.rebar --force
+
+      - name: Merge Cache
+        run: |
+          mv -v _build_app/** _build/
 
       - name: mix test
         run: mix test --cover
