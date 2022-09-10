@@ -13,8 +13,7 @@ defmodule EctoKsuid.MixProject do
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
+        "coveralls.github": :test,
         "coveralls.html": :test
       ],
       deps: deps(),

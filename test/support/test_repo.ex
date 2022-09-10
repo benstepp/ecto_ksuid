@@ -7,10 +7,14 @@ defmodule Ecto.Ksuid.TestRepo do
 
   def init(_type, config) do
     config
-    |> Keyword.put(:url, "ecto://postgres:postgres@postgres/ecto_ksuid_test")
+    |> Keyword.put(:url, url())
     |> Keyword.put(:pool, Ecto.Adapters.SQL.Sandbox)
     |> Keyword.put(:migration_primary_key, name: :id, type: :"char(27)")
     |> Keyword.put(:migration_foreign_key, name: :id, type: :"char(27)")
     |> then(&{:ok, &1})
+  end
+
+  defp url() do
+    System.get_env("DATABASE_URL", "ecto://postgres:postgres@postgres/ecto_ksuid_test")
   end
 end
