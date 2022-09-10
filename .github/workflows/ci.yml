@@ -17,15 +17,9 @@ jobs:
   compile:
     name: Compile
     runs-on: ubuntu-latest
-    container:
-      image: "elixir:1.14.0"
-      volumes:
-        - ./:/app
+    container: "elixir:1.14.0"
 
     steps:
-      - name: pwd
-        run: mkdir -p /app && cd /app
-
       - uses: actions/checkout@v2
 
       - name: Retrieve Mix Dependencies Cache
@@ -67,10 +61,7 @@ jobs:
     name: mix format
     runs-on: ubuntu-latest
     needs: [compile]
-    container:
-      image: "elixir:1.14.0"
-      volumes:
-        - .:/
+    container: "elixir:1.14.0"
     steps:
       - name: mix format
         run: mix format --check-formatted
