@@ -20,7 +20,7 @@ jobs:
     container:
       image: "elixir:1.14.0"
       volumes:
-        - .:/app
+        - ./:/app
 
     steps:
       - name: pwd
