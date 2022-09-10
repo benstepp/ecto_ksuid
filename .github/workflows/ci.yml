@@ -40,11 +40,14 @@ jobs:
           restore-keys: |
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-
 
-      - name: Install Mix Depenencies
-        if: steps.mix-deps-cache.outputs.cache-hit != 'true'
+      - name: Hex/Rebar
         run: |
           mix local.hex --force
           mix local.rebar --force
+
+      - name: Install Mix Depenencies
+        if: steps.mix-deps-cache.outputs.cache-hit != 'true'
+        run: |
           mix deps.get
 
       - name: Compile Dependencies
