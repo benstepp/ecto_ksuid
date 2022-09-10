@@ -115,6 +115,11 @@ jobs:
           restore-keys: |
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-app-build-cache-
 
+      - name: Hex/Rebar
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+
       - name: mix test
         run: mix test --cover
 
