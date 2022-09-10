@@ -11,16 +11,17 @@ permissions:
   contents: read
 
 env:
-  CACHE_VERSION: 'v1'
-  ELIXIR_VERSION: '1.14.0'
   MIX_ENV: 'test'
-  OTP_VERSION: '25.0.4'
 
 jobs:
   compile:
     name: Compile
     runs-on: ubuntu-latest
-    container: "elixir:1.14.0"
+    container:
+      image: "elixir:1.14.0"
+      volumes:
+        - .:.
+
     steps:
       - uses: actions/checkout@v2
 
@@ -59,23 +60,15 @@ jobs:
       - name: Compile
         run: mix compile
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: compiled-application
-          path: .
-
   format:
     name: mix format
     runs-on: ubuntu-latest
     needs: [compile]
-    container: "elixir:1.14.0"
+    container:
+      image: "elixir:1.14.0"
+      volumes:
+        - .:.
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: compiled-application
-
       - name: mix format
         run: mix format --check-formatted
 
