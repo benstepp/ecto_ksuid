@@ -20,9 +20,12 @@ jobs:
     container:
       image: "elixir:1.14.0"
       volumes:
-        - .:/
+        - .:/app
 
     steps:
+      - name: pwd
+        run: mkdir -p /app && cd /app
+
       - uses: actions/checkout@v2
 
       - name: Retrieve Mix Dependencies Cache
