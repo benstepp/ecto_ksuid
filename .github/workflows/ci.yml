@@ -17,35 +17,11 @@ env:
   OTP_VERSION: '25.0.4'
 
 jobs:
-  elixir:
-    name: Elixir
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Setup Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-          version-type: strict
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: elixir-binaries
-          path: |
-            /tmp/.setup_beam/elixir/bin/elixir
-            /tmp/.setup_beam/otp/bin/erl
-
   compile:
     name: Compile
     runs-on: ubuntu-latest
-    needs: elixir
-
+    container: "elixir:1.14.0"
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: elixir-binaries
-
       - uses: actions/checkout@v2
 
       - name: Retrieve Mix Dependencies Cache
@@ -89,10 +65,13 @@ jobs:
           path: .
 
   format:
-    name: format
+    name: mix format
     runs-on: ubuntu-latest
-    needs: [elixir, compile]
+    needs: [compile]
+    container: "elixir:1.14.0"
     steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/download-artifact@v3
         with:
           name: compiled-application
@@ -100,48 +79,110 @@ jobs:
       - name: mix format
         run: mix format --check-formatted
 
-  credo:
-    name: credo
-    runs-on: ubuntu-latest
-    needs: [elixir, compile]
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: compiled-application
-      - name: mix credo
-        run: mix credo
-
-  dialyzer:
-    name: credo
-    runs-on: ubuntu-latest
-    needs: [elixir, compile]
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: compiled-application
-      - name: mix dialyzer
-        run: MIX_ENV=dev mix diayzer
-
-  test:
-    name: test
-    runs-on: ubuntu-latest
-    needs: [elixir, compile]
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: ecto_ksuid_test
-        ports:
-          - '5432:5432'
-        options: >-
-          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: compiled-application
-      - name: mix test
-        run: mix test --cover
-        env:
-          DATABASE_URL: 'ecto://postgres:postgres@0.0.0.0/ecto_ksuid_test'
+          #    steps:
+          #      - name: Setup Elixir
+          #        uses: erlef/setup-beam@v1
+          #        with:
+          #          elixir-version: ${{ env.ELIXIR_VERSION }}
+          #          otp-version: ${{ env.OTP_VERSION }}
+          #          version-type: strict
+          #
+          #      - uses: actions/checkout@v2
+          #
+          #      - name: Retrieve Mix Dependencies Cache
+          #        uses: actions/cache@v2
+          #        id: mix-deps-cache
+          #        with:
+          #          path: deps/**
+          #          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          #          restore-keys: |
+          #            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-
+          #
+          #      - name: Retrieve Build Cache
+          #        uses: actions/cache@v2
+          #        id: mix-build-cache
+          #        with:
+          #          path: _build/**
+          #          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          #          restore-keys: |
+          #            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-
+          #
+          #      - name: Install Mix Depenencies
+          #        if: steps.mix-deps-cache.outputs.cache-hit != 'true'
+          #        run: |
+          #          mix local.hex --force
+          #          mix local.rebar --force
+          #          mix deps.get
+          #
+          #      - name: Compile Dependencies
+          #        if: steps.mix-build-cache.outputs.cache-hit != 'true'
+          #        run: |
+          #          mix deps.compile
+          #          MIX_ENV=dev mix deps.compile
+          #          MIX_ENV=dev mix dialyzer --plt
+          #
+          #      - name: Compile
+          #        run: mix compile
+          #
+          #      - uses: actions/upload-artifact@v3
+          #        with:
+          #          name: compiled-application
+          #          path: .
+          #
+          #  format:
+          #    name: format
+          #    runs-on: ubuntu-latest
+          #    needs: [compile]
+          #    steps:
+          #      - uses: actions/download-artifact@v3
+          #        with:
+          #          name: compiled-application
+          #
+          #      - name: mix format
+          #        run: mix format --check-formatted
+          #
+          #  credo:
+          #    name: credo
+          #    runs-on: ubuntu-latest
+          #    needs: [compile]
+          #    steps:
+          #      - uses: actions/download-artifact@v3
+          #        with:
+          #          name: compiled-application
+          #      - name: mix credo
+          #        run: mix credo
+          #
+          #  dialyzer:
+          #    name: credo
+          #    runs-on: ubuntu-latest
+          #    needs: [compile]
+          #    steps:
+          #      - uses: actions/download-artifact@v3
+          #        with:
+          #          name: compiled-application
+          #      - name: mix dialyzer
+          #        run: MIX_ENV=dev mix diayzer
+          #
+          #  test:
+          #    name: test
+          #    runs-on: ubuntu-latest
+          #    needs: [compile]
+          #    services:
+          #      postgres:
+          #        image: postgres:14
+          #        env:
+          #          POSTGRES_USER: postgres
+          #          POSTGRES_PASSWORD: postgres
+          #          POSTGRES_DB: ecto_ksuid_test
+          #        ports:
+          #          - '5432:5432'
+          #        options: >-
+          #          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          #    steps:
+          #      - uses: actions/download-artifact@v3
+          #        with:
+          #          name: compiled-application
+          #      - name: mix test
+          #        run: mix test --cover
+          #        env:
+          #          DATABASE_URL: 'ecto://postgres:postgres@0.0.0.0/ecto_ksuid_test'
