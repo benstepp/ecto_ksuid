@@ -82,6 +82,9 @@ jobs:
         env:
           MIX_BUILD_ROOT: '_build_app'
         run: |
+          pwd
+          ls
+          mkdir -p _build_app
           rsync -a _build_deps/ _build_app
           mix compile
           rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
@@ -147,6 +150,7 @@ jobs:
         env:
           MIX_BUILD_ROOT: '_build_app'
         run: |
+          mkdir -p _build_app
           rsync -a _build_deps/ _build_app
           mix compile
           rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
