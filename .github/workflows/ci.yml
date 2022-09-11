@@ -66,4 +66,6 @@ jobs:
       - uses: ./.github/actions/compile-elixir
 
       - name: mix test
+        env:
+          DATABASE_URL: 'ecto://postgres:postgres@localhost/ecto_ksuid_test'
         run: mix test --cover
