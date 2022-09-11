@@ -12,14 +12,21 @@ permissions:
 
 env:
   MIX_ENV: 'test'
+  ELIXIR_VERSION: '1.14.0'
+  OTP_VERSION: '25.0.4'
 
 jobs:
   compile:
     name: Compile
     runs-on: ubuntu-latest
-    container: "elixir:1.14.0"
 
     steps:
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+          version-type: strict
+
       - uses: actions/checkout@v2
 
       - name: Hex/Rebar
@@ -32,10 +39,9 @@ jobs:
         id: deps-cache
         with:
           path: deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-
 
       - name: Install Mix Depenencies
         if: steps.deps-cache.outputs.cache-hit != 'true'
@@ -47,14 +53,15 @@ jobs:
         id: deps-build-cache
         with:
           path: |
-            - _build/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+            - _build_deps/**
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
 
       - name: Compile Dependencies
         if: steps.deps-build-cache.outputs.cache-hit != 'true'
+        env:
+          MIX_BUILD_ROOT: '_build_deps'
         run: |
           mix deps.compile
           MIX_ENV=dev mix deps.compile
@@ -66,9 +73,8 @@ jobs:
         with:
           path: |
             - _build_app/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}-${{ hashFiles('lib/**', 'test/**') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ hashFiles('lib/**', 'test/**') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
 
       - name: Compile
@@ -88,7 +94,6 @@ jobs:
     name: mix format
     runs-on: ubuntu-latest
     needs: [compile]
-    container: "elixir:1.14.0"
     steps:
       - name: Hex/Rebar
         run: |
@@ -102,10 +107,9 @@ jobs:
         id: deps-cache
         with:
           path: deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-
 
       - name: Install Mix Depenencies
         if: steps.deps-cache.outputs.cache-hit != 'true'
@@ -117,14 +121,15 @@ jobs:
         id: deps-build-cache
         with:
           path: |
-            - _build/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+            - _build_deps/**
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
 
       - name: Compile Dependencies
         if: steps.deps-build-cache.outputs.cache-hit != 'true'
+        env:
+          MIX_BUILD_ROOT: '_build_deps'
         run: |
           mix deps.compile
           MIX_ENV=dev mix deps.compile
@@ -136,10 +141,9 @@ jobs:
         with:
           path: |
             - _build_app/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}-${{ hashFiles('lib/**', 'test/**') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ hashFiles('lib/**', 'test/**') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
 
       - name: Compile
         if: steps.app-build-cache.outputs.cache-hit != 'true'
@@ -153,7 +157,9 @@ jobs:
           pwd
           echo ls
           ls -lah
+          mkdir -p _build/
           mv -v _build_app/** _build/
+          mv -v _build_deps/** _build/
 
       - name: mix test
         run: mix test --cover
