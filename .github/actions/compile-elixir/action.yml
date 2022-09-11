@@ -21,8 +21,6 @@ runs:
         otp-version: ${{ inputs.otp-version }}
         version-type: strict
 
-    - uses: actions/checkout@v2
-
     - name: Cache deps
       uses: actions/cache@v2
       id: deps-cache
