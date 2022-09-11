@@ -21,244 +21,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-          version-type: strict
-
-      - uses: actions/checkout@v2
-
-      - name: Retrieve Mix Dependencies Cache
-        uses: actions/cache@v2
-        id: deps-cache
-        with:
-          path: deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-
-
-      - name: Install Mix Depenencies
-        if: steps.deps-cache.outputs.cache-hit != 'true'
-        run: |
-          mix deps.get
-
-      - name: Retrieve Deps Build Cache
-        uses: actions/cache@v2
-        id: deps-build-cache
-        with:
-          path: _build_deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
-
-      - name: Compile Dependencies
-        if: steps.deps-build-cache.outputs.cache-hit != 'true'
-        env:
-          MIX_BUILD_ROOT: '_build_deps'
-        run: |
-          mkdir -p _build_deps
-          mix deps.compile
-          MIX_ENV=dev mix deps.compile
-          MIX_ENV=dev mix dialyzer --plt
-
-      - name: Retrieve App Build Cache
-        uses: actions/cache@v2
-        id: app-build-cache
-        with:
-          path: _build_app/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ hashFiles('lib/**', 'test/**') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
-
-      - name: Compile
-        if: steps.app-build-cache.outputs.cache-hit != 'true'
-        env:
-          MIX_BUILD_ROOT: '_build_app'
-        run: |
-          mkdir -p _build_app
-          rsync -a _build_deps/ _build_app
-          mix compile
-          rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
+      - uses: ./.github/actions/compile-elixir
 
   format:
     name: mix format
     runs-on: ubuntu-latest
     needs: [compile]
     steps:
-      - uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-          version-type: strict
+      - uses: ./.github/actions/compile-elixir
 
-      - uses: actions/checkout@v2
+      - name: mix format
+        run: mix format --check-formatted
 
-      - name: Retrieve Mix Dependencies Cache
-        uses: actions/cache@v2
-        id: deps-cache
-        with:
-          path: deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-
+  credo:
+    name: mix credo
+    runs-on: ubuntu-latest
+    needs: [compile]
+    steps:
+      - uses: ./.github/actions/compile-elixir
 
-      - name: Install Mix Depenencies
-        if: steps.deps-cache.outputs.cache-hit != 'true'
-        run: |
-          mix deps.get
+      - name: mix credo
+        run: mix credo
 
-      - name: Retrieve Deps Build Cache
-        uses: actions/cache@v2
-        id: deps-build-cache
-        with:
-          path: _build_deps/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ hashFiles('mix.lock') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
+  dialyzer:
+    name: mix dialyzer
+    runs-on: ubuntu-latest
+    needs: [compile]
+    steps:
+      - uses: ./.github/actions/compile-elixir
 
-      - name: Compile Dependencies
-        if: steps.deps-build-cache.outputs.cache-hit != 'true'
-        env:
-          MIX_BUILD_ROOT: '_build_deps'
-        run: |
-          mkdir -p _build_deps
-          mix deps.compile
-          MIX_ENV=dev mix deps.compile
-          MIX_ENV=dev mix dialyzer --plt
+      - name: mix dialyzer
+        run: MIX_ENV=dev mix dialyzer
 
-      - name: Retrieve App Build Cache
-        uses: actions/cache@v2
-        id: app-build-cache
-        with:
-          path: _build_app/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ hashFiles('lib/**', 'test/**') }}
-          restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
-
-      - name: Compile
-        if: steps.app-build-cache.outputs.cache-hit != 'true'
-        env:
-          MIX_BUILD_ROOT: '_build_app'
-        run: |
-          mkdir -p _build_app
-          rsync -a _build_deps/ _build_app
-          mix compile
-          rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
-
-      - name: Merge Cache
-        run: |
-          mkdir -p _build/
-          rsync -a _build_deps/ _build
-          rsync -a _build_app/ _build
+  test:
+    name: mix test
+    runs-on: ubuntu-latest
+    needs: [compile]
+    steps:
+      - uses: ./.github/actions/compile-elixir
 
       - name: mix test
         run: mix test --cover
-
-          #    steps:
-          #      - name: Setup Elixir
-          #        uses: erlef/setup-beam@v1
-          #        with:
-          #          elixir-version: ${{ env.ELIXIR_VERSION }}
-          #          otp-version: ${{ env.OTP_VERSION }}
-          #          version-type: strict
-          #
-          #      - uses: actions/checkout@v2
-          #
-          #      - name: Retrieve Mix Dependencies Cache
-          #        uses: actions/cache@v2
-          #        id: mix-deps-cache
-          #        with:
-          #          path: deps/**
-          #          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
-          #          restore-keys: |
-          #            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-mix-deps-cache-
-          #
-          #      - name: Retrieve Build Cache
-          #        uses: actions/cache@v2
-          #        id: mix-build-cache
-          #        with:
-          #          path: _build/**
-          #          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
-          #          restore-keys: |
-          #            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-test-build-cache-
-          #
-          #      - name: Install Mix Depenencies
-          #        if: steps.mix-deps-cache.outputs.cache-hit != 'true'
-          #        run: |
-          #          mix local.hex --force
-          #          mix local.rebar --force
-          #          mix deps.get
-          #
-          #      - name: Compile Dependencies
-          #        if: steps.mix-build-cache.outputs.cache-hit != 'true'
-          #        run: |
-          #          mix deps.compile
-          #          MIX_ENV=dev mix deps.compile
-          #          MIX_ENV=dev mix dialyzer --plt
-          #
-          #      - name: Compile
-          #        run: mix compile
-          #
-          #      - uses: actions/upload-artifact@v3
-          #        with:
-          #          name: compiled-application
-          #          path: .
-          #
-          #  format:
-          #    name: format
-          #    runs-on: ubuntu-latest
-          #    needs: [compile]
-          #    steps:
-          #      - uses: actions/download-artifact@v3
-          #        with:
-          #          name: compiled-application
-          #
-          #      - name: mix format
-          #        run: mix format --check-formatted
-          #
-          #  credo:
-          #    name: credo
-          #    runs-on: ubuntu-latest
-          #    needs: [compile]
-          #    steps:
-          #      - uses: actions/download-artifact@v3
-          #        with:
-          #          name: compiled-application
-          #      - name: mix credo
-          #        run: mix credo
-          #
-          #  dialyzer:
-          #    name: credo
-          #    runs-on: ubuntu-latest
-          #    needs: [compile]
-          #    steps:
-          #      - uses: actions/download-artifact@v3
-          #        with:
-          #          name: compiled-application
-          #      - name: mix dialyzer
-          #        run: MIX_ENV=dev mix diayzer
-          #
-          #  test:
-          #    name: test
-          #    runs-on: ubuntu-latest
-          #    needs: [compile]
-          #    services:
-          #      postgres:
-          #        image: postgres:14
-          #        env:
-          #          POSTGRES_USER: postgres
-          #          POSTGRES_PASSWORD: postgres
-          #          POSTGRES_DB: ecto_ksuid_test
-          #        ports:
-          #          - '5432:5432'
-          #        options: >-
-          #          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-          #    steps:
-          #      - uses: actions/download-artifact@v3
-          #        with:
-          #          name: compiled-application
-          #      - name: mix test
-          #        run: mix test --cover
-          #        env:
-          #          DATABASE_URL: 'ecto://postgres:postgres@0.0.0.0/ecto_ksuid_test'

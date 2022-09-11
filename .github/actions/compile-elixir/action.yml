@@ -1,0 +1,85 @@
+name: 'Compile Elixir'
+description: 'Compiles and Caches your elixir Application'
+
+inputs:
+  elixir-version:
+    description: 'Elixir Version'
+    required: false
+    default: '1.14.0'
+  otp-version:
+    description: 'OTP Version'
+    required: false
+    default: '25.0.4'
+
+runs:
+  using: 'composite'
+  steps:
+
+    - uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ inputs.elixir-version }}
+        otp-version: ${{ inputs.otp-version }}
+        version-type: strict
+
+    - uses: actions/checkout@v2
+
+    - name: Cache deps
+      uses: actions/cache@v2
+      id: deps-cache
+      with:
+        path: deps/**
+        key: ${{ inputs.elixir-version }}-${{ inputs.otp-version }}-deps-${{ hashFiles('mix.lock') }}
+        restore-keys: |
+          ${{ inputs.elixir-version }}-${{ inputs.otp-version }}-deps-
+
+    - name: Install Mix Depenencies
+      if: steps.deps-cache.outputs.cache-hit != 'true'
+      run: |
+        mix deps.get
+
+    - name: Cache Dependencies _build
+      uses: actions/cache@v2
+      id: deps-build-cache
+      with:
+        path: _build_deps/**
+        key: ${{ inputs.elixir-version }}-${{ inputs.otp-version }}-build-${{ hashFiles('mix.lock') }}
+        restore-keys: |
+          ${{ inputs.elixir-version }}-${{ inputs.otp-version }}-build-
+
+    - name: Compile Dependencies
+      if: steps.deps-build-cache.outputs.cache-hit != 'true'
+      env:
+        MIX_BUILD_ROOT: '_build_deps'
+      run: |
+        mkdir -p _build_deps
+        mix deps.compile
+        MIX_ENV=dev mix deps.compile
+
+    - name: Build Dependency PLT
+      if: steps.deps-build-cache.outputs.cache-hit != 'true'
+      run: MIX_ENV=dev mix dialyzer --plt
+
+    - name: Cache Application _build
+      uses: actions/cache@v2
+      id: app-build-cache
+      with:
+        path: _build_app/**
+        key: ${{ inputs.elixir-version }}-${{ inputs.otp-version }}-buildapp-${{ hashFiles('lib/**', 'test/**') }}
+        restore-keys: |
+          ${{ inputs.elixir-version }}-${{ inputs.otp-version }}-buildapp-
+
+    - name: Compile Application
+      if: steps.app-build-cache.outputs.cache-hit != 'true'
+      env:
+        MIX_BUILD_ROOT: '_build_app'
+      run: |
+        mkdir -p _build_app
+        rsync -a _build_deps/ _build_app
+        mix compile
+        rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
+
+    - name: Merge _build Directory
+      run: |
+        mkdir -p _build/
+        rsync -a _build_deps/ _build
+        rsync -a _build_app/ _build
