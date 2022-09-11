@@ -58,11 +58,9 @@ jobs:
         env:
           MIX_BUILD_ROOT: '_build_deps'
         run: |
-          ls
-          MIX_DEBUG=1 mix deps.compile
-          MIX_ENV=dev MIX_DEBUG=1 mix deps.compile
-          #MIX_ENV=dev mix dialyzer --plt
-          ls
+          mix deps.compile
+          MIX_ENV=dev mix deps.compile
+          MIX_ENV=dev mix dialyzer --plt
 
       - name: Retrieve App Build Cache
         uses: actions/cache@v2
@@ -79,17 +77,13 @@ jobs:
         env:
           MIX_BUILD_ROOT: '_build_app'
         run: |
+          ls
           mkdir -p _build_app
+          ls
           rsync -a _build_deps/ _build_app
           mix compile
           rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
-
-      - name: Check
-        run: |
-          pwd
-          ls -lah
-          ls _build_deps
-          ls _build_app
+          ls
 
   format:
     name: mix format
