@@ -1,6 +1,7 @@
 # ecto_ksuid
 
 ![License MIT](https://img.shields.io/badge/license-MIT-brightgreen "License MIT")
+![Build Status](https://github.com/benstepp/ecto_ksuid/actions/workflows/ci.yml/badge.svg)
 
 `Ecto.Ksuid` allows seamless usage of
 [ksuids](https://github.com/segmentio/ksuid) with `:ecto` in your application.
