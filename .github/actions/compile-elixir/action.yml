@@ -32,6 +32,7 @@ runs:
 
     - name: Install Mix Depenencies
       if: steps.deps-cache.outputs.cache-hit != 'true'
+      shell: bash
       run: |
         mix deps.get
 
@@ -46,6 +47,7 @@ runs:
 
     - name: Compile Dependencies
       if: steps.deps-build-cache.outputs.cache-hit != 'true'
+      shell: bash
       env:
         MIX_BUILD_ROOT: '_build_deps'
       run: |
@@ -55,6 +57,7 @@ runs:
 
     - name: Build Dependency PLT
       if: steps.deps-build-cache.outputs.cache-hit != 'true'
+      shell: bash
       run: MIX_ENV=dev mix dialyzer --plt
 
     - name: Cache Application _build
@@ -68,6 +71,7 @@ runs:
 
     - name: Compile Application
       if: steps.app-build-cache.outputs.cache-hit != 'true'
+      shell: bash
       env:
         MIX_BUILD_ROOT: '_build_app'
       run: |
@@ -77,6 +81,7 @@ runs:
         rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
 
     - name: Merge _build Directory
+      shell: bash
       run: |
         mkdir -p _build/
         rsync -a _build_deps/ _build
