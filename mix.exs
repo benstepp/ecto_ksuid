@@ -1,21 +1,25 @@
 defmodule EctoKsuid.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @source_url "https://github.com/benstepp/ecto_ksuid"
+
   def project do
     [
       app: :ecto_ksuid,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
-      source_url: "https://github.com/benstepp/ecto_ksuid",
-      homepage_url: "https://github.com/benstepp/ecto_ksuid",
+      source_url: @source_url,
+      homepage_url: @source_url,
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
         "coveralls.github": :test,
         "coveralls.html": :test
       ],
+      package: package(),
       deps: deps(),
       docs: docs()
     ]
@@ -66,6 +70,16 @@ defmodule EctoKsuid.MixProject do
       "README.md",
       "guides/using_ksuid_as_default.md",
       "guides/configuring_prefix.md"
+    ]
+  end
+
+  defp package() do
+    [
+      name: :ecto_ksuid,
+      licenses: ["MIT"],
+      links: %{
+        GitHub: @source_url
+      }
     ]
   end
 end
