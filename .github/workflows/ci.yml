@@ -124,6 +124,10 @@ jobs:
 
       - name: Merge Cache
         run: |
+          echo pwd
+          pwd
+          echo ls
+          ls -lah
           mv -v _build_app/** _build/
 
       - name: mix test
