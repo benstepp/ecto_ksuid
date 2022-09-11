@@ -77,6 +77,13 @@ jobs:
           MIX_BUILD_ROOT: '_build_app'
         run: mix compile
 
+      - name: Check
+        run: |
+          echo pwd
+          pwd
+          echo ls
+          ls -lah
+
   format:
     name: mix format
     runs-on: ubuntu-latest
