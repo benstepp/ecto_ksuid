@@ -53,16 +53,14 @@ jobs:
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
 
       - name: Compile Dependencies
-        #if: steps.deps-build-cache.outputs.cache-hit != 'true'
+        if: steps.deps-build-cache.outputs.cache-hit != 'true'
         env:
           MIX_BUILD_ROOT: '_build_deps'
         run: |
-          ls
           mkdir -p _build_deps
           mix deps.compile
           MIX_ENV=dev mix deps.compile
           MIX_ENV=dev mix dialyzer --plt
-          ls
 
       - name: Retrieve App Build Cache
         uses: actions/cache@v2
@@ -74,17 +72,14 @@ jobs:
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
 
       - name: Compile
-        #if: steps.app-build-cache.outputs.cache-hit != 'true'
+        if: steps.app-build-cache.outputs.cache-hit != 'true'
         env:
           MIX_BUILD_ROOT: '_build_app'
         run: |
-          ls
           mkdir -p _build_app
-          ls
           rsync -a _build_deps/ _build_app
           mix compile
           rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
-          ls
 
   format:
     name: mix format
@@ -127,6 +122,7 @@ jobs:
         env:
           MIX_BUILD_ROOT: '_build_deps'
         run: |
+          mkdir -p _build_deps
           mix deps.compile
           MIX_ENV=dev mix deps.compile
           MIX_ENV=dev mix dialyzer --plt
@@ -145,24 +141,16 @@ jobs:
         env:
           MIX_BUILD_ROOT: '_build_app'
         run: |
-          ls
           mkdir -p _build_app
-          ls
           rsync -a _build_deps/ _build_app
           mix compile
           rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
-          ls
 
       - name: Merge Cache
         run: |
-          echo pwd
-          pwd
-          echo ls
-          ls -lah
           mkdir -p _build/
-          mv -v _build_app/** _build/
-          mv -v _build_deps/** _build/
-          ls _build
+          rsync -a _build_deps/ _build
+          rsync -a _build_app/ _build
 
       - name: mix test
         run: mix test --cover
