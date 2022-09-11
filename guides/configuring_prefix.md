@@ -5,7 +5,7 @@ This makes logging and debugging a little more developer friendly.
 
 This is similar to stripe's object prefixed ids:
 
-* `"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`
+- `"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`
 
 ## Allowed Values
 
@@ -14,11 +14,11 @@ runtime. Only the ksuid is stored in the database columns.
 
 Some valid values:
 
-* `"ch_"`
-* `"posts-"`
-* `"123"`
-* `"long string because it really doesn't matter, but you really shouldn't"`
-* `"🐸"`
+- `"ch_"`
+- `"posts-"`
+- `"123"`
+- `"long string because it really doesn't matter, but you really shouldn't"`
+- `"🐸"`
 
 Yes, if you like frog or have a frog table, you can use frog emojis as a
 prefix.
