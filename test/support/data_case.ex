@@ -14,7 +14,10 @@ defmodule EctoKsuid.DataCase do
       alias EctoKsuid.TestSchema
       alias EctoKsuid.RawTestSchema
 
+      require Ecto.Query
+
       import EctoKsuid.DataCase, except: [setup_sandbox: 1]
+      import Ecto.Query
     end
   end
 

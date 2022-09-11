@@ -64,4 +64,58 @@ defmodule EctoKsuid.PrimaryKeyFieldTest do
 
     assert errors_on(changeset).id
   end
+
+  test "can Repo.get by id" do
+    {:ok, schema} =
+      %PrimaryKeyField{}
+      |> changeset()
+      |> Repo.insert()
+
+    assert result = Repo.get(PrimaryKeyField, schema.id)
+    assert result.id == schema.id
+  end
+
+  test "can use Ecto.Query expressions by id" do
+    {:ok, schema} =
+      %PrimaryKeyField{}
+      |> changeset()
+      |> Repo.insert()
+
+    query =
+      from(np in PrimaryKeyField,
+        where: np.id == ^schema.id,
+        limit: 1
+      )
+
+    assert result = Repo.one(query)
+    assert result.id == schema.id
+  end
+
+  test "can use Ecto.Query macros by id" do
+    {:ok, schema} =
+      %PrimaryKeyField{}
+      |> changeset()
+      |> Repo.insert()
+
+    query =
+      PrimaryKeyField
+      |> where([np], np.id == ^schema.id)
+      |> limit(1)
+
+    assert result = Repo.one(query)
+    assert result.id == schema.id
+  end
+
+  test "querying without prefix errors" do
+    {:ok, schema} =
+      %PrimaryKeyField{}
+      |> changeset()
+      |> Repo.insert()
+
+    "pkey_" <> ksuid = schema.id
+
+    assert_raise Ecto.Query.CastError, fn ->
+      Repo.get(PrimaryKeyField, ksuid)
+    end
+  end
 end
