@@ -29,22 +29,22 @@ defmodule EctoKsuid do
   @type database_ksuid() :: t()
 
   @impl Ecto.ParameterizedType
-  def init(opts), do: Type.init(opts)
+  defdelegate init(opts), to: Type
 
   @impl Ecto.ParameterizedType
-  def type(options), do: Type.type(options)
+  defdelegate type(options), to: Type
 
   @impl Ecto.ParameterizedType
-  def cast(value, options), do: Type.cast(value, options)
+  defdelegate cast(value, options), to: Type
 
   @impl Ecto.ParameterizedType
-  def dump(value, dumper, options), do: Type.dump(value, dumper, options)
+  defdelegate dump(value, dumper, options), to: Type
 
   @impl Ecto.ParameterizedType
-  def load(value, loader, options), do: Type.load(value, loader, options)
+  defdelegate load(value, loader, options), to: Type
 
   @impl Ecto.ParameterizedType
-  def autogenerate(options), do: Type.autogenerate(options)
+  defdelegate autogenerate(options), to: Type
 
   @doc """
   Removes the configured prefix from an EctoKsuid.
