@@ -59,7 +59,7 @@ jobs:
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-
 
       - name: Compile Dependencies
-        if: steps.deps-build-cache.outputs.cache-hit != 'true'
+        #if: steps.deps-build-cache.outputs.cache-hit != 'true'
         env:
           MIX_BUILD_ROOT: '_build_deps'
         run: |
