@@ -149,7 +149,10 @@ jobs:
         if: steps.app-build-cache.outputs.cache-hit != 'true'
         env:
           MIX_BUILD_ROOT: '_build_app'
-        run: mix compile
+        run: |
+          rsync -a _build_deps/ _build_app
+          mix compile
+          rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
 
       - name: Merge Cache
         run: |
