@@ -83,6 +83,11 @@ jobs:
     needs: [compile]
     container: "elixir:1.14.0"
     steps:
+      - name: Hex/Rebar
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+
       - uses: actions/checkout@v2
 
       - name: Retrieve Mix Dependencies Cache
@@ -95,16 +100,28 @@ jobs:
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-${{ env.CACHE_VERSION }}
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps
 
+      - name: Install Mix Depenencies
+        if: steps.deps-cache.outputs.cache-hit != 'true'
+        run: |
+          mix deps.get
+
       - name: Retrieve Deps Build Cache
         uses: actions/cache@v2
         id: deps-build-cache
         with:
           path: |
             - _build/**
-          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-build-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
+          key: ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-build-${{ env.CACHE_VERSION }}
-            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-deps-build
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build-${{ env.CACHE_VERSION }}
+            ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-build
+
+      - name: Compile Dependencies
+        if: steps.deps-build-cache.outputs.cache-hit != 'true'
+        run: |
+          mix deps.compile
+          MIX_ENV=dev mix deps.compile
+          MIX_ENV=dev mix dialyzer --plt
 
       - name: Retrieve App Build Cache
         uses: actions/cache@v2
@@ -117,10 +134,11 @@ jobs:
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-${{ env.CACHE_VERSION }}
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp
 
-      - name: Hex/Rebar
-        run: |
-          mix local.hex --force
-          mix local.rebar --force
+      - name: Compile
+        if: steps.app-build-cache.outputs.cache-hit != 'true'
+        env:
+          MIX_BUILD_ROOT: '_build_app'
+        run: mix compile
 
       - name: Merge Cache
         run: |
