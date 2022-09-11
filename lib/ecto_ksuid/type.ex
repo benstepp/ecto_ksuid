@@ -1,10 +1,10 @@
-defmodule Ecto.Ksuid.Type do
+defmodule EctoKsuid.Type do
   @moduledoc """
   Contains callbacks for an `Ecto.ParameterizedType`
   """
 
-  alias Ecto.Ksuid.Options
-  alias Ecto.Ksuid.Validator
+  alias EctoKsuid.Options
+  alias EctoKsuid.Validator
 
   @spec init(keyword()) :: Options.t()
   def init(opts) do
@@ -15,7 +15,7 @@ defmodule Ecto.Ksuid.Type do
   def type(_options), do: :string
 
   @spec cast(String.t() | nil | any(), Options.t()) ::
-          {:ok, Ecto.Ksuid.runtime_ksuid()} | {:ok, nil} | :error
+          {:ok, EctoKsuid.runtime_ksuid()} | {:ok, nil} | :error
   def cast(value, options) when is_binary(value) do
     Validator.is_valid?(value, options)
   end
@@ -28,11 +28,11 @@ defmodule Ecto.Ksuid.Type do
     :error
   end
 
-  @spec dump(Ecto.Ksuid.runtime_ksuid() | nil | any(), function(), Options.t()) ::
-          {:ok, Ecto.Ksuid.database_ksuid()} | {:ok}
+  @spec dump(EctoKsuid.runtime_ksuid() | nil | any(), function(), Options.t()) ::
+          {:ok, EctoKsuid.database_ksuid()} | {:ok}
   def dump(value, _dumper, options) when is_binary(value) do
     value
-    |> Ecto.Ksuid.remove_prefix(options)
+    |> EctoKsuid.remove_prefix(options)
     |> Validator.is_valid?()
   end
 
@@ -44,10 +44,10 @@ defmodule Ecto.Ksuid.Type do
     :error
   end
 
-  @spec load(Ecto.Ksuid.database_ksuid() | nil | any(), function(), Options.t()) ::
-          {:ok, Ecto.Ksuid.runtime_ksuid()} | {:ok}
+  @spec load(EctoKsuid.database_ksuid() | nil | any(), function(), Options.t()) ::
+          {:ok, EctoKsuid.runtime_ksuid()} | {:ok}
   def load(value, _loader, options) when is_binary(value) do
-    case Ecto.Ksuid.Validator.is_valid?(value) do
+    case EctoKsuid.Validator.is_valid?(value) do
       {:ok, value} ->
         {:ok, "#{options.prefix}#{value}"}
 
@@ -64,8 +64,8 @@ defmodule Ecto.Ksuid.Type do
     :error
   end
 
-  @spec autogenerate(Options.t()) :: Ecto.Ksuid.runtime_ksuid()
+  @spec autogenerate(Options.t()) :: EctoKsuid.runtime_ksuid()
   def autogenerate(options) do
-    "#{options.prefix}#{Ecto.Ksuid.generate()}"
+    "#{options.prefix}#{EctoKsuid.generate()}"
   end
 end

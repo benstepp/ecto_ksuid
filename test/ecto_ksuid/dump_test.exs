@@ -1,5 +1,5 @@
-defmodule Ecto.Ksuid.DumpTest do
-  use Ecto.Ksuid.DataCase
+defmodule EctoKsuid.DumpTest do
+  use EctoKsuid.DataCase
 
   def dumper(), do: nil
   @dumper &__MODULE__.dumper/0

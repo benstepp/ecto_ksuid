@@ -32,7 +32,7 @@ prefix.
 defmodule MyApp.User do
   use Ecto.Schema
 
-  @primary_key {:id, Ecto.Ksuid, autogenerate: true, prefix: "user_"}
+  @primary_key {:id, EctoKsuid, autogenerate: true, prefix: "user_"}
 
   schema "users" do
     # ...
@@ -49,7 +49,7 @@ defmodule MyApp.Post do
 
   schema "posts" do
     # ...
-    field :public_id, Ecto.Ksuid, prefix: "post_"
+    field :public_id, EctoKsuid, prefix: "post_"
   end
 end
 ```
@@ -64,8 +64,8 @@ defmodule MyApp.Schema do
     quote do
       use Ecto.Schema
 
-      @primary_key {:id, Ecto.Ksuid, unquote(options)}
-      @foreign_key_type Ecto.Ksuid
+      @primary_key {:id, EctoKsuid, unquote(options)}
+      @foreign_key_type EctoKsuid
     end
   end
 end

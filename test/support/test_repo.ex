@@ -1,4 +1,4 @@
-defmodule Ecto.Ksuid.TestRepo do
+defmodule EctoKsuid.TestRepo do
   @moduledoc false
 
   use Ecto.Repo,

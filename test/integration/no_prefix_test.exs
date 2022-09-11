@@ -1,10 +1,10 @@
-defmodule Ecto.Ksuid.NoPrefixTest do
-  use Ecto.Ksuid.DataCase, async: true
+defmodule EctoKsuid.NoPrefixTest do
+  use EctoKsuid.DataCase, async: true
 
   defmodule NoPrefix do
     use Ecto.Schema
 
-    @primary_key {:id, Ecto.Ksuid, autogenerate: true}
+    @primary_key {:id, EctoKsuid, autogenerate: true}
 
     schema "test_schemas" do
     end

@@ -14,8 +14,8 @@ default. See also the **Repo Configuration** section of `Ecto.Migration`.
     ```elixir
     # config/config.exs
     config :my_app, MyApp.Repo,
-      migration_primary_key: [name: :id, type: Ecto.Ksuid.column()],
-      migration_foreign_key: [name: :id, type: Ecto.Ksuid.column()]
+      migration_primary_key: [name: :id, type: EctoKsuid.column()],
+      migration_foreign_key: [name: :id, type: EctoKsuid.column()]
     ```
 
 2. Create migrations as you normally would.
@@ -37,8 +37,8 @@ default. See also the **Repo Configuration** section of `Ecto.Migration`.
     end
     ```
 
-Now, any migrations that will add a `:primary_key` of `:id` with the `Ecto.Ksuid`
-type. Additionally, any references will use the `Ecto.Ksuid` type.
+Now, any migrations that will add a `:primary_key` of `:id` with the `EctoKsuid`
+type. Additionally, any references will use the `EctoKsuid` type.
 
 ## Configuring Schemas
 
@@ -54,8 +54,8 @@ default. See also the **Schema Attributes** section of `Ecto.Schema`.
         quote do
           use Ecto.Schema
 
-          @primary_key {:id, Ecto.Ksuid, autogenerate: true}
-          @foreign_key_type Ecto.Ksuid
+          @primary_key {:id, EctoKsuid, autogenerate: true}
+          @foreign_key_type EctoKsuid
         end
       end
     end
@@ -75,8 +75,8 @@ default. See also the **Schema Attributes** section of `Ecto.Schema`.
     ```
 
 Now any schemas using `MyApp.Schema` will get the `:id` field with the type of
-`Ecto.Ksuid` as the primary key.
+`EctoKsuid` as the primary key.
 
 The `belongs_to` association on `MyApp.Comment` will also define a `:post_id`
-field with the `Ecto.Ksuid` type that references the `:id` field of the
+field with the `EctoKsuid` type that references the `:id` field of the
 `MyApp.Post`

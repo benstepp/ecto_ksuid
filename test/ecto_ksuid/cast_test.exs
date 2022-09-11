@@ -1,5 +1,5 @@
-defmodule Ecto.Ksuid.CastTest do
-  use Ecto.Ksuid.DataCase
+defmodule EctoKsuid.CastTest do
+  use EctoKsuid.DataCase
 
   test "cast/2 is valid for a nil" do
     value = nil

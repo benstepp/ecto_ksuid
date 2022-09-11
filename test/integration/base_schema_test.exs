@@ -1,5 +1,5 @@
-defmodule Ecto.Ksuid.BaseSchemaTest do
-  use Ecto.Ksuid.DataCase, async: true
+defmodule EctoKsuid.BaseSchemaTest do
+  use EctoKsuid.DataCase, async: true
 
   defmodule BaseSchema do
     defmacro __using__(opts \\ []) do
@@ -8,8 +8,8 @@ defmodule Ecto.Ksuid.BaseSchemaTest do
       quote do
         use Ecto.Schema
 
-        @primary_key {:id, Ecto.Ksuid, unquote(options)}
-        @foreign_key_type Ecto.Ksuid
+        @primary_key {:id, EctoKsuid, unquote(options)}
+        @foreign_key_type EctoKsuid
       end
     end
   end

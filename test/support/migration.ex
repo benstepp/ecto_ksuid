@@ -1,4 +1,4 @@
-defmodule Ecto.Ksuid.TestMigration do
+defmodule EctoKsuid.TestMigration do
   @moduledoc false
 
   use Ecto.Migration

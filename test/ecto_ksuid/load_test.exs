@@ -1,5 +1,5 @@
-defmodule Ecto.Ksuid.LoadTest do
-  use Ecto.Ksuid.DataCase
+defmodule EctoKsuid.LoadTest do
+  use EctoKsuid.DataCase
 
   def loader(), do: nil
   @loader &__MODULE__.loader/0

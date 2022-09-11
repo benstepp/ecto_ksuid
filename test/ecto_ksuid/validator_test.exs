@@ -1,7 +1,7 @@
-defmodule Ecto.Ksuid.ValidatorTest do
-  use Ecto.Ksuid.DataCase
+defmodule EctoKsuid.ValidatorTest do
+  use EctoKsuid.DataCase
 
-  alias Ecto.Ksuid.Validator
+  alias EctoKsuid.Validator
 
   test "is_valid/2 returns :ok for a valid ksuid without a prefix" do
     value = ksuid()

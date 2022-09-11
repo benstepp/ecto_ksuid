@@ -1,4 +1,4 @@
-defmodule Ecto.Ksuid.DataCase do
+defmodule EctoKsuid.DataCase do
   @moduledoc """
   Test Case template providing database access
   """
@@ -7,29 +7,29 @@ defmodule Ecto.Ksuid.DataCase do
 
   using do
     quote do
-      alias Ecto.Ksuid, as: Type
-      alias Ecto.Ksuid.TestRepo, as: Repo
-      alias Ecto.Ksuid.Options
-      alias Ecto.Ksuid.Validator
-      alias Ecto.Ksuid.TestSchema
-      alias Ecto.Ksuid.RawTestSchema
+      alias EctoKsuid, as: Type
+      alias EctoKsuid.TestRepo, as: Repo
+      alias EctoKsuid.Options
+      alias EctoKsuid.Validator
+      alias EctoKsuid.TestSchema
+      alias EctoKsuid.RawTestSchema
 
-      import Ecto.Ksuid.DataCase, except: [setup_sandbox: 1]
+      import EctoKsuid.DataCase, except: [setup_sandbox: 1]
     end
   end
 
   setup tags do
-    Ecto.Ksuid.DataCase.setup_sandbox(tags)
+    EctoKsuid.DataCase.setup_sandbox(tags)
     :ok
   end
 
   def setup_sandbox(tags) do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Ecto.Ksuid.TestRepo, shared: not tags[:async])
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(EctoKsuid.TestRepo, shared: not tags[:async])
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end
 
   def ksuid() do
-    Ecto.Ksuid.generate()
+    EctoKsuid.generate()
   end
 
   @doc """

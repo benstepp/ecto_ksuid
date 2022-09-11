@@ -3,7 +3,7 @@
 ![License MIT](https://img.shields.io/badge/license-MIT-brightgreen "License MIT")
 ![Build Status](https://github.com/benstepp/ecto_ksuid/actions/workflows/ci.yml/badge.svg)
 
-`Ecto.Ksuid` allows seamless usage of
+`EctoKsuid` allows seamless usage of
 [ksuids](https://github.com/segmentio/ksuid) with `:ecto` in your application.
 To get a better idea of what ksuids are, and how they came to be I highly
 recommend reading [A breif History of the
@@ -12,7 +12,7 @@ UUID](https://segment.com/blog/a-brief-history-of-the-uuid/)
 > [Ksuid] borrows core ideas from the ubiquitous UUID standard, adding time-based
 > ordering and more friendly representation formats.
 
-Additionally, `Ecto.Ksuid` allows easy addition of a `:prefix` to the ksuid
+Additionally, `EctoKsuid` allows easy addition of a `:prefix` to the ksuid
 that are available at runtime. This generates developer friendly ids much like
 stripe's object prefixed ids in your elixir application. (ie:
 `"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`)
@@ -41,7 +41,7 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
 
 ## Basic Usage
 
-`Ecto.Ksuid` is just a custom `Ecto.ParameterizedType` and can be used in your
+`EctoKsuid` is just a custom `Ecto.ParameterizedType` and can be used in your
 application just like any other Ecto type.
 
 1. Add columns to your database
@@ -52,7 +52,7 @@ application just like any other Ecto type.
 
       def change do
         alter table(:users) do
-          add :public_id, Ecto.Ksuid.column()
+          add :public_id, EctoKsuid.column()
         end
       end
     end
@@ -66,7 +66,7 @@ application just like any other Ecto type.
 
       schema "users" do
         # ...
-        field :public_id, Ecto.Ksuid
+        field :public_id, EctoKsuid
       end
     end
     ```

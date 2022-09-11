@@ -1,5 +1,5 @@
-defmodule Ecto.Ksuid.PrimaryKeyFieldTest do
-  use Ecto.Ksuid.DataCase, async: true
+defmodule EctoKsuid.PrimaryKeyFieldTest do
+  use EctoKsuid.DataCase, async: true
 
   defmodule PrimaryKeyField do
     use Ecto.Schema
@@ -7,7 +7,7 @@ defmodule Ecto.Ksuid.PrimaryKeyFieldTest do
     @primary_key false
 
     schema "test_schemas" do
-      field(:id, Ecto.Ksuid, primary_key: true, autogenerate: true, prefix: "pkey_")
+      field(:id, EctoKsuid, primary_key: true, autogenerate: true, prefix: "pkey_")
     end
   end
 
@@ -43,7 +43,7 @@ defmodule Ecto.Ksuid.PrimaryKeyFieldTest do
     assert "pkey_" <> ^ksuid = result.id
   end
 
-  test "errors when passed invalid Ecto.Ksuid (no prefix)" do
+  test "errors when passed invalid EctoKsuid (no prefix)" do
     ksuid = ksuid()
 
     assert {:error, changeset} =
@@ -54,7 +54,7 @@ defmodule Ecto.Ksuid.PrimaryKeyFieldTest do
     assert errors_on(changeset).id
   end
 
-  test "errors when passed invalid Ecto.Ksuid (wrong prefix)" do
+  test "errors when passed invalid EctoKsuid (wrong prefix)" do
     ksuid = ksuid()
 
     assert {:error, changeset} =

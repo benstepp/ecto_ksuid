@@ -1,28 +1,28 @@
-defmodule Ecto.Ksuid do
+defmodule EctoKsuid do
   @moduledoc """
   Custom Ecto type to support ksuids
   """
 
   use Ecto.ParameterizedType
 
-  alias Ecto.Ksuid.Options
-  alias Ecto.Ksuid.Type
+  alias EctoKsuid.Options
+  alias EctoKsuid.Type
 
   @typedoc """
-  An `Ecto.Ksuid` is a base62 encoded string. That may or may not include an
+  An `EctoKsuid` is a base62 encoded string. That may or may not include an
   optional configure prefix.
   """
   @type t() :: String.t()
 
   @typedoc """
-  A runtime_ksuid is the value of the Ecto.Ksuid in the elixir application.
+  A runtime_ksuid is the value of the EctoKsuid in the elixir application.
 
   It contains the configured prefix and the ksuid stored in the database.
   """
   @type runtime_ksuid() :: t()
 
   @typedoc """
-  A database_ksuid is the value of the Ecto.Ksuid in the database.
+  A database_ksuid is the value of the EctoKsuid in the database.
 
   It contains just the ksuid without the configured prefix.
   """
@@ -47,16 +47,16 @@ defmodule Ecto.Ksuid do
   def autogenerate(options), do: Type.autogenerate(options)
 
   @doc """
-  Removes the configured prefix from an Ecto.Ksuid.
+  Removes the configured prefix from an EctoKsuid.
 
   This can be used to get the raw ksuid without the runtime prefix.
 
   ## Examples
 
-      iex> Ecto.Ksuid.remove_prefix("prefix_2EXLuF3dU8v4L4JLInQXNWpjKE0", %Ecto.Ksuid.Options{prefix: "prefix_"})
+      iex> EctoKsuid.remove_prefix("prefix_2EXLuF3dU8v4L4JLInQXNWpjKE0", %EctoKsuid.Options{prefix: "prefix_"})
       "2EXLuF3dU8v4L4JLInQXNWpjKE0"
 
-      iex> Ecto.Ksuid.remove_prefix("2EXLuF3dU8v4L4JLInQXNWpjKE0", %Ecto.Ksuid.Options{prefix: ""})
+      iex> EctoKsuid.remove_prefix("2EXLuF3dU8v4L4JLInQXNWpjKE0", %EctoKsuid.Options{prefix: ""})
       "2EXLuF3dU8v4L4JLInQXNWpjKE0"
 
   """
@@ -82,7 +82,7 @@ defmodule Ecto.Ksuid do
 
   ## Examples
 
-      iex> Ecto.Ksuid.generate()
+      iex> EctoKsuid.generate()
       "#{Ksuid.generate()}"
   """
   @spec generate() :: t()
@@ -91,7 +91,7 @@ defmodule Ecto.Ksuid do
   end
 
   @doc """
-  Returns the primitive migration type for an Ecto.Ksuid.
+  Returns the primitive migration type for an EctoKsuid.
 
   This can be used in your migrations, so you don't have to rememeber exactly
   how large a ksuid is.
@@ -103,7 +103,7 @@ defmodule Ecto.Ksuid do
   ```elixir
   def change() do
     create table(:table_name, primary_key: false) do
-      add(:id, Ecto.Ksuid.column(), primary_key: true)
+      add(:id, EctoKsuid.column(), primary_key: true)
     end
   end
   ```
@@ -112,8 +112,8 @@ defmodule Ecto.Ksuid do
 
   ```elixir
   config :my_app, MyApp.Repo,
-    migration_primary_key: [name: :id, type: Ecto.Ksuid.column()],
-    migration_foreign_key: [name: :id, type: Ecto.Ksuid.column()]
+    migration_primary_key: [name: :id, type: EctoKsuid.column()],
+    migration_foreign_key: [name: :id, type: EctoKsuid.column()]
   ```
   """
   @spec column() :: :"char(27)"

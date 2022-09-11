@@ -1,4 +1,4 @@
-defmodule Ecto.Ksuid.Options do
+defmodule EctoKsuid.Options do
   @moduledoc """
   Struct containing validated options
 
@@ -15,7 +15,7 @@ defmodule Ecto.Ksuid.Options do
         }
 
   @doc """
-  Compiles Ecto.Ksuid.Options given a keyword list of opts
+  Compiles EctoKsuid.Options given a keyword list of opts
   """
   @spec compile(keyword()) :: t()
   def compile(opts \\ [])
@@ -27,7 +27,7 @@ defmodule Ecto.Ksuid.Options do
   end
 
   @doc """
-  Returns the default options for Ecto.Ksuid
+  Returns the default options for EctoKsuid
   """
   @spec default() :: t()
   def default() do
@@ -43,18 +43,18 @@ defmodule Ecto.Ksuid.Options do
 
       {:ok, invalid} ->
         raise ArgumentError, """
-        Ecto.Ksuid types must have a :prefix option of a string, found #{inspect(invalid)}.
+        EctoKsuid types must have a :prefix option of a string, found #{inspect(invalid)}.
 
         For example:
 
           schema "users" do
-            field :id, Ecto.Ksuid, prefix: "users_"
+            field :id, EctoKsuid, prefix: "users_"
             # ...
           end
 
         or
 
-          @primary_key {:id, Ecto.Ksuid, prefix: "test_"}
+          @primary_key {:id, EctoKsuid, prefix: "test_"}
           schema "users" do
             # ...
           end

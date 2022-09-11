@@ -1,13 +1,13 @@
-defmodule Ecto.Ksuid.PublicIdTest do
-  use Ecto.Ksuid.DataCase, async: true
+defmodule EctoKsuid.PublicIdTest do
+  use EctoKsuid.DataCase, async: true
 
   defmodule PublicId do
     use Ecto.Schema
 
-    @primary_key {:id, Ecto.Ksuid, autogenerate: true}
+    @primary_key {:id, EctoKsuid, autogenerate: true}
 
     schema "test_schemas" do
-      field(:public_id, Ecto.Ksuid, autogenerate: true, prefix: "public_")
+      field(:public_id, EctoKsuid, autogenerate: true, prefix: "public_")
     end
   end
 
@@ -43,7 +43,7 @@ defmodule Ecto.Ksuid.PublicIdTest do
     assert "public_" <> ^ksuid = result.public_id
   end
 
-  test "errors when passed invalid Ecto.Ksuid (no prefix)" do
+  test "errors when passed invalid EctoKsuid (no prefix)" do
     ksuid = ksuid()
 
     assert {:error, changeset} =
@@ -54,7 +54,7 @@ defmodule Ecto.Ksuid.PublicIdTest do
     assert errors_on(changeset).public_id
   end
 
-  test "errors when passed invalid Ecto.Ksuid (wrong prefix)" do
+  test "errors when passed invalid EctoKsuid (wrong prefix)" do
     ksuid = ksuid()
 
     assert {:error, changeset} =

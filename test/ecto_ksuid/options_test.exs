@@ -1,5 +1,5 @@
-defmodule Ecto.Ksuid.OptionsTest do
-  use Ecto.Ksuid.DataCase
+defmodule EctoKsuid.OptionsTest do
+  use EctoKsuid.DataCase
 
   test "default/0 uses an empty prefix" do
     assert %Options{prefix: ""} = Options.default()

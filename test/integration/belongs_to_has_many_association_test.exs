@@ -1,13 +1,13 @@
-defmodule Ecto.Ksuid.BelongsToHasManyAssociationTest do
-  use Ecto.Ksuid.DataCase, async: true
+defmodule EctoKsuid.BelongsToHasManyAssociationTest do
+  use EctoKsuid.DataCase, async: true
 
   defmodule Parent do
     use Ecto.Schema
 
-    @primary_key {:id, Ecto.Ksuid, autogenerate: true}
+    @primary_key {:id, EctoKsuid, autogenerate: true}
 
     schema "test_schemas" do
-      has_many(:children, Ecto.Ksuid.BelongsToHasManyAssociationTest.Child,
+      has_many(:children, EctoKsuid.BelongsToHasManyAssociationTest.Child,
         foreign_key: :association_id
       )
     end
@@ -16,10 +16,10 @@ defmodule Ecto.Ksuid.BelongsToHasManyAssociationTest do
   defmodule Child do
     use Ecto.Schema
 
-    @primary_key {:id, Ecto.Ksuid, autogenerate: true}
+    @primary_key {:id, EctoKsuid, autogenerate: true}
 
     schema "test_associations" do
-      belongs_to(:parent, Parent, foreign_key: :association_id, type: Ecto.Ksuid)
+      belongs_to(:parent, Parent, foreign_key: :association_id, type: EctoKsuid)
     end
   end
 

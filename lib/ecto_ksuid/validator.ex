@@ -1,12 +1,12 @@
-defmodule Ecto.Ksuid.Validator do
+defmodule EctoKsuid.Validator do
   @moduledoc """
-  Validates if a given value is a valid Ecto.Ksuid
+  Validates if a given value is a valid EctoKsuid
   """
 
-  alias Ecto.Ksuid.Options
+  alias EctoKsuid.Options
 
   @doc """
-  Validates a given Ecto.Ksuid.
+  Validates a given EctoKsuid.
 
   Will check that the value:
 
@@ -16,23 +16,23 @@ defmodule Ecto.Ksuid.Validator do
 
   ## Examples
 
-      iex> Ecto.Ksuid.Validator.is_valid?("#{Ecto.Ksuid.generate()}", %Ecto.Ksuid.Options{prefix: ""})
+      iex> EctoKsuid.Validator.is_valid?("#{EctoKsuid.generate()}", %EctoKsuid.Options{prefix: ""})
       {:ok, valid_ksuid}
 
-      iex> Ecto.Ksuid.Validator.is_valid?("prefix_#{Ecto.Ksuid.generate()}", %Ecto.Ksuid.Options{prefix: "prefix_"})
+      iex> EctoKsuid.Validator.is_valid?("prefix_#{EctoKsuid.generate()}", %EctoKsuid.Options{prefix: "prefix_"})
       {:ok, valid_ksuid}
 
-      iex> Ecto.Ksuid.Validator.is_valid?(nil, %Ecto.Ksuid.Options{prefix: ""})
+      iex> EctoKsuid.Validator.is_valid?(nil, %EctoKsuid.Options{prefix: ""})
       :error
 
-      iex> Ecto.Ksuid.Validator.is_valid?("wrong_#{Ecto.Ksuid.generate()}", %Ecto.Ksuid.Options{prefix: "prefix_"})
+      iex> EctoKsuid.Validator.is_valid?("wrong_#{EctoKsuid.generate()}", %EctoKsuid.Options{prefix: "prefix_"})
       :error
 
   """
   @spec is_valid?(String.t() | any(), Options.t()) :: {:ok, String.t()} | :error
   def is_valid?(value, options) when is_binary(value) do
     with :ok <- validate_prefix(value, options),
-         ksuid <- Ecto.Ksuid.remove_prefix(value, options),
+         ksuid <- EctoKsuid.remove_prefix(value, options),
          {:ok, _ksuid} <- is_valid?(ksuid),
          do: {:ok, value}
   end
@@ -51,10 +51,10 @@ defmodule Ecto.Ksuid.Validator do
 
   ## Examples
 
-      iex> Ecto.Ksuid.Validator.is_valid?("#{Ecto.Ksuid.generate()}")
+      iex> EctoKsuid.Validator.is_valid?("#{EctoKsuid.generate()}")
       {:ok, valid_ksuid}
 
-      iex> Ecto.Ksuid.Validator.is_valid?(nil)
+      iex> EctoKsuid.Validator.is_valid?(nil)
       :error
 
   """

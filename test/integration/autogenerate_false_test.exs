@@ -1,13 +1,13 @@
-defmodule Ecto.Ksuid.AutogenerateFalseTest do
-  use Ecto.Ksuid.DataCase, async: true
+defmodule EctoKsuid.AutogenerateFalseTest do
+  use EctoKsuid.DataCase, async: true
 
   defmodule AutogenerateFalse do
     use Ecto.Schema
 
-    @primary_key {:id, Ecto.Ksuid, autogenerate: false}
+    @primary_key {:id, EctoKsuid, autogenerate: false}
 
     schema "test_schemas" do
-      field(:public_id, Ecto.Ksuid, autogenerate: false)
+      field(:public_id, EctoKsuid, autogenerate: false)
     end
   end
 

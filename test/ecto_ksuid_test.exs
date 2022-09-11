@@ -1,7 +1,7 @@
-defmodule Ecto.KsuidTest do
-  use Ecto.Ksuid.DataCase
+defmodule EctoKsuidTest do
+  use EctoKsuid.DataCase
 
   test "column/0 returns char(27)" do
-    assert :"char(27)" = Ecto.Ksuid.column()
+    assert :"char(27)" = EctoKsuid.column()
   end
 end

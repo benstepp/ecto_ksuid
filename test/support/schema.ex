@@ -1,4 +1,4 @@
-defmodule Ecto.Ksuid.RawTestSchema do
+defmodule EctoKsuid.RawTestSchema do
   @moduledoc """
   Raw access to the strings stored in the database
   """
