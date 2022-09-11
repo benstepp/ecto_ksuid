@@ -78,27 +78,24 @@ jobs:
             ${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-buildapp-
 
       - name: Compile
-        if: steps.app-build-cache.outputs.cache-hit != 'true'
+        #if: steps.app-build-cache.outputs.cache-hit != 'true'
         env:
           MIX_BUILD_ROOT: '_build_app'
-        run: mix compile
-
-      - name: Check
         run: |
-          echo pwd
-          pwd
-          echo ls
-          ls -lah
+          rsync -a _build_deps/ _build_app
+          mix compile
+          rsync -a --ignore-non-existing --remove-source-files _build_app/ _build_deps
 
   format:
     name: mix format
     runs-on: ubuntu-latest
     needs: [compile]
     steps:
-      - name: Hex/Rebar
-        run: |
-          mix local.hex --force
-          mix local.rebar --force
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+          version-type: strict
 
       - uses: actions/checkout@v2
 
@@ -163,6 +160,7 @@ jobs:
           mkdir -p _build/
           mv -v _build_app/** _build/
           mv -v _build_deps/** _build/
+          ls _build
 
       - name: mix test
         run: mix test --cover
