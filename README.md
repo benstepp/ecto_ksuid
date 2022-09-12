@@ -17,8 +17,15 @@ UUID](https://segment.com/blog/a-brief-history-of-the-uuid/)
 
 Additionally, `EctoKsuid` allows easy addition of a `:prefix` to the ksuid
 that are available at runtime. This generates developer friendly ids much like
-stripe's object prefixed ids in your elixir application. (ie:
-`"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`)
+stripe's object prefixed ids in your elixir application.
+
+#### Example Ksuids using the `"user_"` prefix
+
+- `"user_2EgT2R97RRNXWXdA3Ov6znVLDCd"`
+- `"user_2EgT5YAJ1EMj86IdI8In8Cmfsnj"`
+- `"user_2EgT6WuSzOmcF9bZaRdS3X6lEaL"`
+- `"user_2EgT7SEl7LaIGIHIQ1gIjB9eVwT"`
+- `"user_2EgT8B20KvdsIQznKX6Tuh2RGDe"`
 
 ## Documentation
 

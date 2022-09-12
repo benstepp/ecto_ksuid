@@ -5,7 +5,7 @@ This makes logging and debugging a little more developer friendly.
 
 This is similar to stripe's object prefixed ids:
 
-- `"user_2EXfh2MYltdeuaZucgVQAfqgOmt"`
+- `"user_2EgT2R97RRNXWXdA3Ov6znVLDCd"`
 
 ## Allowed Values
 
