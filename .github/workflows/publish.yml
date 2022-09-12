@@ -2,8 +2,6 @@ name: Publish
 
 on:
   workflow_dispatch:
-  release:
-    type: [published]
 
 permissions:
   contents: read
