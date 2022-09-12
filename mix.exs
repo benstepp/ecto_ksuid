@@ -7,6 +7,7 @@ defmodule EctoKsuid.MixProject do
   def project do
     [
       app: :ecto_ksuid,
+      description: description(),
       version: @version,
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -46,6 +47,13 @@ defmodule EctoKsuid.MixProject do
       {:ex_doc, "0.28.5", only: [:dev], runtime: false},
       {:excoveralls, "0.14.6", only: [:test]}
     ]
+  end
+
+  defp description() do
+    """
+    Ecto.Type that allows using ksuids with developer friendly prefixes. (ie.
+    "user_2EgT2R97RRNXWXdA3Ov6znVLDCd").
+    """
   end
 
   defp docs() do
