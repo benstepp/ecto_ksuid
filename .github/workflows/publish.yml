@@ -1,0 +1,22 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  release:
+    type: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/compile-elixir
+
+      - name: mix hex.publish
+        run: mix hex.publish --yes
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
