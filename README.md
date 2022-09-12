@@ -1,7 +1,10 @@
 # ecto_ksuid
 
-![License MIT](https://img.shields.io/badge/license-MIT-brightgreen 'License MIT')
-![Build Status](https://github.com/benstepp/ecto_ksuid/actions/workflows/ci.yml/badge.svg)
+[![Build Status](https://github.com/benstepp/ecto_ksuid/actions/workflows/ci.yml/badge.svg)](https://github.com/benstepp/ecto_ksuid/actions)
+[![Hex.pm Version](https://img.shields.io/hexpm/v/ecto_ksuid 'hex.pm')](https://hex.pm/ecto_ksuid)
+[![Hexdocs](https://img.shields.io/badge/Docs-hexdocs-green 'hexdocs.pm')](https://hexdocs.pm/ecto_ksuid)
+[![Downloads](https://img.shields.io/hexpm/dt/ecto_ksuid)](https://hex.pm/ecto_ksuid)
+[![License MIT](https://img.shields.io/badge/license-MIT-green 'License MIT')](https://github.com/benstepp/ecto_ksuid/blob/main/LICENSE)
 
 `EctoKsuid` allows seamless usage of
 [ksuids](https://github.com/segmentio/ksuid) with `:ecto` in your application.
@@ -34,7 +37,7 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
    end
    ```
 
-2. Add columns to your database
+2. Install using mix.
 
    ```bash
    mix deps.get
