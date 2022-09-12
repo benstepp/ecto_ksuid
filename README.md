@@ -1,6 +1,6 @@
 # ecto_ksuid
 
-![License MIT](https://img.shields.io/badge/license-MIT-brightgreen "License MIT")
+![License MIT](https://img.shields.io/badge/license-MIT-brightgreen 'License MIT')
 ![Build Status](https://github.com/benstepp/ecto_ksuid/actions/workflows/ci.yml/badge.svg)
 
 `EctoKsuid` allows seamless usage of
@@ -25,19 +25,20 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
 
 1. Add `:ecto_ksuid` to your list of dependencies in `mix.exs`
 
-    ```elixir
-    def deps do
-      [
-        # ...
-        {:ecto_ksuid, "~> 0.1.0"}
-      ]
-    end
-    ```
+   ```elixir
+   def deps do
+     [
+       # ...
+       {:ecto_ksuid, "~> 0.1.0"}
+     ]
+   end
+   ```
+
 2. Add columns to your database
 
-    ```bash
-    mix deps.get
-    ```
+   ```bash
+   mix deps.get
+   ```
 
 ## Basic Usage
 
@@ -46,33 +47,34 @@ application just like any other Ecto type.
 
 1. Add columns to your database
 
-    ```elixir
-    defmodule MyApp.Repo.Migrations.AddPublicIdToUsers do
-      use Ecto.Migration
+   ```elixir
+   defmodule MyApp.Repo.Migrations.AddPublicIdToUsers do
+     use Ecto.Migration
 
-      def change do
-        alter table(:users) do
-          add :public_id, EctoKsuid.column()
-        end
-      end
-    end
-    ```
+     def change do
+       alter table(:users) do
+         add :public_id, EctoKsuid.column()
+       end
+     end
+   end
+   ```
 
 2. Add fields to your schema
 
-    ```elixir
-    defmodule MyApp.User do
-      use Ecto.Schema
+   ```elixir
+   defmodule MyApp.User do
+     use Ecto.Schema
 
-      schema "users" do
-        # ...
-        field :public_id, EctoKsuid
-      end
-    end
-    ```
+     schema "users" do
+       # ...
+       field :public_id, EctoKsuid
+     end
+   end
+   ```
+
 ## Guides
 
 For more details on how to use this library, check out the guides:
 
-* [Using Ksuid as the Default](using_ksuid_as_default.md)
-* [Configuring Prefix](configuring_prefix.md)
+- [Using Ksuid as the Default](using_ksuid_as_default.md)
+- [Configuring Prefix](configuring_prefix.md)
