@@ -7,7 +7,9 @@ defmodule EctoKsuid.BelongsToHasOneAssociationTest do
     @primary_key {:id, EctoKsuid, autogenerate: true}
 
     schema "test_schemas" do
-      has_one(:child, EctoKsuid.BelongsToHasOneAssociationTest.Child, foreign_key: :association_id)
+      has_one(:child, EctoKsuid.BelongsToHasOneAssociationTest.Child,
+        foreign_key: :association_id
+      )
     end
   end
 

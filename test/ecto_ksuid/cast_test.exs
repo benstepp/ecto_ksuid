@@ -80,7 +80,7 @@ defmodule EctoKsuid.CastTest do
   end
 
   test "cast/2 is not valid for a charlist" do
-    value = 'charlist'
+    value = ~c"charlist"
     options = Options.default()
 
     assert :error = Type.cast(value, options)
