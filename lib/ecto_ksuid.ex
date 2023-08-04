@@ -112,8 +112,8 @@ defmodule EctoKsuid do
 
   ```elixir
   config :my_app, MyApp.Repo,
-    migration_primary_key: [name: :id, type: EctoKsuid.column()],
-    migration_foreign_key: [name: :id, type: EctoKsuid.column()]
+    migration_primary_key: [name: :id, type: :"char(27)"],
+    migration_foreign_key: [name: :id, type: :"char(27)"]
   ```
   """
   @spec column() :: :"char(27)"
