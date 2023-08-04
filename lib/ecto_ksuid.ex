@@ -71,6 +71,11 @@ defmodule EctoKsuid do
     end
   end
 
+  @spec remove_prefix(String.t()) :: database_ksuid()
+  def remove_prefix(value) when is_binary(value) do
+    binary_part(value, byte_size(value), -27)
+  end
+
   @doc """
   Generates a new ksuid.
 
