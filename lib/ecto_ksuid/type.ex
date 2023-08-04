@@ -49,7 +49,7 @@ defmodule EctoKsuid.Type do
   def load(value, _loader, options) when is_binary(value) do
     case EctoKsuid.Validator.is_valid?(value) do
       {:ok, value} ->
-        {:ok, "#{options.prefix}#{value}"}
+        {:ok, "#{Options.prefix(options)}#{value}"}
 
       :error ->
         :error
@@ -66,6 +66,6 @@ defmodule EctoKsuid.Type do
 
   @spec autogenerate(Options.t()) :: EctoKsuid.runtime_ksuid()
   def autogenerate(options) do
-    "#{options.prefix}#{EctoKsuid.generate()}"
+    "#{Options.prefix(options)}#{EctoKsuid.generate()}"
   end
 end

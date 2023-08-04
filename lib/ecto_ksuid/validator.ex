@@ -70,7 +70,7 @@ defmodule EctoKsuid.Validator do
   end
 
   defp validate_prefix(value, options) do
-    case String.starts_with?(value, options.prefix) do
+    case String.starts_with?(value, Options.prefix(options)) do
       true -> :ok
       false -> :error
     end

@@ -61,4 +61,81 @@ defmodule EctoKsuid.BelongsToHasManyAssociationTest do
 
     assert assoc_parent == parent
   end
+
+  defmodule ParentWithPrefix do
+    use Ecto.Schema
+
+    @primary_key {:id, EctoKsuid, autogenerate: true, prefix: "parent_"}
+
+    schema "test_schemas" do
+      has_many(:children, EctoKsuid.BelongsToHasManyAssociationTest.ChildWithPrefix,
+        foreign_key: :association_id
+      )
+    end
+  end
+
+  defmodule ChildWithPrefix do
+    use Ecto.Schema
+
+    @primary_key {:id, EctoKsuid, autogenerate: true, prefix: "child_"}
+
+    schema "test_associations" do
+      belongs_to(:parent, ParentWithPrefix, foreign_key: :association_id, type: EctoKsuid, prefix: :inferred)
+    end
+  end
+
+  test "belongs to/has_many association works both ways with prefixes" do
+    {:ok, parent} =
+      %ParentWithPrefix{}
+      |> changeset()
+      |> Repo.insert()
+
+    {:ok, first_child} =
+      %ChildWithPrefix{}
+      |> changeset(%{association_id: parent.id})
+      |> Repo.insert()
+
+    {:ok, second_child} =
+      %ChildWithPrefix{}
+      |> changeset(%{association_id: parent.id})
+      |> Repo.insert()
+
+    assert children =
+             parent
+             |> Ecto.assoc(:children)
+             |> Repo.all()
+
+    assert first_child in children
+    assert second_child in children
+
+    assert assoc_parent =
+             first_child
+             |> Ecto.assoc(:parent)
+             |> Repo.one()
+
+    assert assoc_parent == parent
+
+    assert assoc_parent =
+             second_child
+             |> Ecto.assoc(:parent)
+             |> Repo.one()
+
+    assert assoc_parent == parent
+
+    assert [first_child, second_child] ==
+             ChildWithPrefix
+             |> Ecto.Query.where([c], c.association_id == ^parent.id)
+             |> Ecto.Query.order_by(asc: :inserted_at)
+             |> Repo.all()
+
+    assert parent ==
+             ParentWithPrefix
+             |> Ecto.Query.where([p], p.id == ^first_child.association_id)
+             |> Repo.one()
+
+    assert parent ==
+             ParentWithPrefix
+             |> Ecto.Query.where([p], p.id == ^second_child.association_id)
+             |> Repo.one()
+  end
 end

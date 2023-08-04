@@ -62,7 +62,7 @@ defmodule EctoKsuid do
   """
   @spec remove_prefix(String.t(), Options.t()) :: database_ksuid()
   def remove_prefix(value, %Options{} = options) when is_binary(value) do
-    case options.prefix do
+    case Options.prefix(options) do
       "" ->
         value
 

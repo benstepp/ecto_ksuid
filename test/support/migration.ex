@@ -13,6 +13,7 @@ defmodule EctoKsuid.TestMigration do
       add(:id, :char, size: 27, primary_key: true)
       add(:public_id, :"char(27)")
       add(:association_id, references(:test_schemas))
+      timestamps(null: true)
     end
   end
 end
