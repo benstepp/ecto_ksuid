@@ -46,4 +46,41 @@ defmodule EctoKsuid.BaseSchemaTest do
     assert "macro_" <> ksuid = result.id
     assert {:ok, _ksuid} = Validator.is_valid?(ksuid)
   end
+
+  defmodule Parent do
+    use BaseSchema, prefix: "parent_"
+
+    schema "test_schemas" do
+      has_one(:child, Child)
+    end
+  end
+
+  defmodule Child do
+    use BaseSchema, prefix: "child_"
+
+    schema "test_associations" do
+      belongs_to(:parent, Parent, source: :association_id)
+    end
+  end
+
+  test "can use inferred prefixes as a default for foreign_key_type" do
+    {:ok, parent} =
+      %Parent{}
+      |> changeset()
+      |> Repo.insert()
+
+    assert "parent_" <> ksuid = parent.id
+    assert {:ok, _ksuid} = Validator.is_valid?(ksuid)
+
+    {:ok, child} =
+      %Child{}
+      |> changeset(%{parent_id: parent.id})
+      |> Repo.insert()
+
+    assert "child_" <> ksuid = child.id
+    assert {:ok, _ksuid} = Validator.is_valid?(ksuid)
+
+    assert "parent_" <> ksuid = child.parent_id
+    assert {:ok, _ksuid} = Validator.is_valid?(ksuid)
+  end
 end

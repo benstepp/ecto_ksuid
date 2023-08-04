@@ -80,7 +80,10 @@ defmodule EctoKsuid.BelongsToHasManyAssociationTest do
     @primary_key {:id, EctoKsuid, autogenerate: true, prefix: "child_"}
 
     schema "test_associations" do
-      belongs_to(:parent, ParentWithPrefix, foreign_key: :association_id, type: EctoKsuid, prefix: :inferred)
+      belongs_to(:parent, ParentWithPrefix,
+        foreign_key: :association_id,
+        type: EctoKsuid
+      )
     end
   end
 
