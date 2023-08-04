@@ -15,6 +15,6 @@ defmodule EctoKsuid.TestRepo do
   end
 
   defp url() do
-    System.get_env("DATABASE_URL", "ecto://postgres:postgres@postgres/ecto_ksuid_test")
+    System.get_env("DATABASE_URL", "ecto://postgres:postgres@localhost/ecto_ksuid_test")
   end
 end

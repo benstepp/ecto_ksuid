@@ -1,22 +1,8 @@
 version: '3'
 
 services:
-  app:
-    build:
-      context: './'
-      dockerfile: Dockerfile
-    tty: true
-    command: python3 -m http.server 9000 --directory ./doc/
-    ports:
-      - '9000:9000'
-    volumes:
-      - ./:/app
-      - /app/deps
-      - /app/_build
-    depends_on:
-      - postgres
   postgres:
-    image: 'postgres:14.5'
+    image: 'postgres:15.2'
     volumes:
       - 'postgres_data:/var/lib/postgresql/data'
     environment:

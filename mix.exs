@@ -9,7 +9,7 @@ defmodule EctoKsuid.MixProject do
       app: :ecto_ksuid,
       description: description(),
       version: @version,
-      elixir: "~> 1.14",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       source_url: @source_url,
@@ -39,7 +39,7 @@ defmodule EctoKsuid.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, ">= 3.0.0"},
+      {:ecto_sql, ">= 3.10.0"},
       {:ksuid, "0.1.2"},
       {:postgrex, "0.16.4", only: [:dev, :test]},
       {:credo, "1.6.7", only: [:dev, :test], runtime: false},
