@@ -13,8 +13,8 @@ default. See also the **Repo Configuration** section of `Ecto.Migration`.
    ```elixir
    # config/config.exs
    config :my_app, MyApp.Repo,
-     migration_primary_key: [name: :id, type: EctoKsuid.column()],
-     migration_foreign_key: [name: :id, type: EctoKsuid.column()]
+     migration_primary_key: [name: :id, type: :"char(27)"],
+     migration_foreign_key: [name: :id, type: :"char(27)"]
    ```
 
 2. Create migrations as you normally would.

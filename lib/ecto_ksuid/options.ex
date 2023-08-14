@@ -7,11 +7,13 @@ defmodule EctoKsuid.Options do
   """
 
   defstruct [
-    :prefix
+    :prefix,
+    :config
   ]
 
   @type t() :: %__MODULE__{
-          prefix: String.t()
+          prefix: String.t() | :inferred,
+          config: map()
         }
 
   @doc """
@@ -22,7 +24,8 @@ defmodule EctoKsuid.Options do
 
   def compile(opts) when is_list(opts) do
     %__MODULE__{
-      prefix: prefix(opts)
+      prefix: option_prefix(opts),
+      config: Map.new(opts)
     }
   end
 
@@ -34,12 +37,15 @@ defmodule EctoKsuid.Options do
     compile()
   end
 
-  defp prefix(opts) do
+  defp option_prefix(opts) do
     opts
     |> Keyword.fetch(:prefix)
     |> case do
       {:ok, prefix} when is_binary(prefix) ->
         prefix
+
+      {:ok, :inferred} ->
+        :inferred
 
       {:ok, invalid} ->
         raise ArgumentError, """
@@ -61,7 +67,35 @@ defmodule EctoKsuid.Options do
         """
 
       :error ->
+        :inferred
+    end
+  end
+
+  @doc """
+  Returns the prefix for a given set of options
+  """
+  @spec prefix(options :: t()) :: String.t()
+  def prefix(%__MODULE__{prefix: :inferred, config: config}) do
+    inferred_prefix(config)
+  end
+
+  def prefix(%__MODULE__{prefix: prefix}) do
+    prefix
+  end
+
+  defp inferred_prefix(%{schema: schema, field: field}) when is_atom(schema) and is_atom(field) do
+    inferred_prefix(schema.__schema__(:association, field))
+  end
+
+  defp inferred_prefix(%Ecto.Association.BelongsTo{related: related, related_key: related_key}) do
+    case related.__schema__(:type, related_key) do
+      {:parameterized, EctoKsuid, %__MODULE__{prefix: prefix}} when is_binary(prefix) ->
+        prefix
+
+      _ ->
         ""
     end
   end
+
+  defp inferred_prefix(_), do: ""
 end

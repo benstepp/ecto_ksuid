@@ -62,13 +62,18 @@ defmodule EctoKsuid do
   """
   @spec remove_prefix(String.t(), Options.t()) :: database_ksuid()
   def remove_prefix(value, %Options{} = options) when is_binary(value) do
-    case options.prefix do
+    case Options.prefix(options) do
       "" ->
         value
 
       prefix ->
         String.replace_leading(value, prefix, "")
     end
+  end
+
+  @spec remove_prefix(String.t()) :: database_ksuid()
+  def remove_prefix(value) when is_binary(value) do
+    binary_part(value, byte_size(value), -27)
   end
 
   @doc """
@@ -112,8 +117,8 @@ defmodule EctoKsuid do
 
   ```elixir
   config :my_app, MyApp.Repo,
-    migration_primary_key: [name: :id, type: EctoKsuid.column()],
-    migration_foreign_key: [name: :id, type: EctoKsuid.column()]
+    migration_primary_key: [name: :id, type: :"char(27)"],
+    migration_foreign_key: [name: :id, type: :"char(27)"]
   ```
   """
   @spec column() :: :"char(27)"

@@ -12,8 +12,8 @@ permissions:
 
 env:
   MIX_ENV: 'test'
-  ELIXIR_VERSION: '1.14.0'
-  OTP_VERSION: '25.0.4'
+  ELIXIR_VERSION: '1.15.4'
+  OTP_VERSION: '26.0.2'
 
 jobs:
   compile:

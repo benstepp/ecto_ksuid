@@ -1,7 +1,7 @@
 defmodule EctoKsuid.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @source_url "https://github.com/benstepp/ecto_ksuid"
 
   def project do
@@ -9,7 +9,7 @@ defmodule EctoKsuid.MixProject do
       app: :ecto_ksuid,
       description: description(),
       version: @version,
-      elixir: "~> 1.14",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       source_url: @source_url,
@@ -39,11 +39,11 @@ defmodule EctoKsuid.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, ">= 3.0.0"},
+      {:ecto_sql, ">= 3.10.0"},
       {:ksuid, "0.1.2"},
       {:postgrex, "0.16.4", only: [:dev, :test]},
       {:credo, "1.6.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "1.2.0", only: [:dev], runtime: false},
+      {:dialyxir, "1.3.0", only: [:dev], runtime: false},
       {:ex_doc, "0.28.5", only: [:dev], runtime: false},
       {:excoveralls, "0.14.6", only: [:test]}
     ]
