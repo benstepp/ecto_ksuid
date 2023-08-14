@@ -5,11 +5,11 @@ inputs:
   elixir-version:
     description: 'Elixir Version'
     required: false
-    default: '1.14.0'
+    default: '1.15.4'
   otp-version:
     description: 'OTP Version'
     required: false
-    default: '25.0.4'
+    default: '26.0.2'
 
 runs:
   using: 'composite'
