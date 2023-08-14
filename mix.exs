@@ -43,7 +43,7 @@ defmodule EctoKsuid.MixProject do
       {:ksuid, "0.1.2"},
       {:postgrex, "0.16.4", only: [:dev, :test]},
       {:credo, "1.6.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "1.2.0", only: [:dev], runtime: false},
+      {:dialyxir, "1.3.0", only: [:dev], runtime: false},
       {:ex_doc, "0.28.5", only: [:dev], runtime: false},
       {:excoveralls, "0.14.6", only: [:test]}
     ]
