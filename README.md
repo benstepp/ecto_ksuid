@@ -39,7 +39,7 @@ Documentation can be found online on [HexDocs](https://hexdocs.pm/ecto_ksuid).
    def deps do
      [
        # ...
-       {:ecto_ksuid, "~> 0.1.0"}
+       {:ecto_ksuid, "~> 0.3.0"}
      ]
    end
    ```
