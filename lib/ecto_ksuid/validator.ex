@@ -30,7 +30,7 @@ defmodule EctoKsuid.Validator do
 
   """
   @spec is_valid?(String.t() | any(), Options.t()) :: {:ok, String.t()} | :error
-  def is_valid?(value, options) when is_binary(value) do
+  def is_valid?(value, %Options{} = options) when is_binary(value) do
     with :ok <- validate_prefix(value, options),
          ksuid <- EctoKsuid.remove_prefix(value, options),
          {:ok, _ksuid} <- is_valid?(ksuid),
@@ -67,6 +67,15 @@ defmodule EctoKsuid.Validator do
 
   def is_valid?(_value) do
     :error
+  end
+
+  @doc false
+  def is_valid_for_dump?(value, %Options{dump_prefix: false}) do
+    is_valid?(value)
+  end
+
+  def is_valid_for_dump?(value, %Options{dump_prefix: true} = options) do
+    is_valid?(value, options)
   end
 
   defp validate_prefix(value, options) do

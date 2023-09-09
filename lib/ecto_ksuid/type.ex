@@ -32,8 +32,8 @@ defmodule EctoKsuid.Type do
           {:ok, EctoKsuid.database_ksuid()} | {:ok}
   def dump(value, _dumper, options) when is_binary(value) do
     value
-    |> EctoKsuid.remove_prefix(options)
-    |> Validator.is_valid?()
+    |> maybe_remove_prefix(options)
+    |> Validator.is_valid_for_dump?(options)
   end
 
   def dump(value, _dumper, _options) when is_nil(value) do
@@ -42,6 +42,14 @@ defmodule EctoKsuid.Type do
 
   def dump(_value, _dumper, _options) do
     :error
+  end
+
+  defp maybe_remove_prefix(value, %Options{dump_prefix: true}) do
+    value
+  end
+
+  defp maybe_remove_prefix(value, %Options{dump_prefix: false} = options) do
+    EctoKsuid.remove_prefix(value, options)
   end
 
   @spec load(EctoKsuid.database_ksuid() | nil | any(), function(), Options.t()) ::

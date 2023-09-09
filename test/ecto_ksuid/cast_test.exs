@@ -79,6 +79,30 @@ defmodule EctoKsuid.CastTest do
     assert :error = Type.cast(value, options)
   end
 
+  test "cast/2 is valid when dumping prefix" do
+    ksuid = ksuid()
+    value = "runtime_#{ksuid}"
+    options = Options.compile(prefix: "runtime_", dump_prefix: true)
+
+    assert {:ok, ^value} = Type.cast(value, options)
+  end
+
+  test "cast/2 is invalid when dumping prefix and stored prefix is incorrect" do
+    ksuid = ksuid()
+    value = "invalid_#{ksuid}"
+    options = Options.compile(prefix: "runtime_", dump_prefix: true)
+
+    assert :error = Type.cast(value, options)
+  end
+
+  test "cast/2 is invalid when dumping prefix and stored prefix is missing" do
+    ksuid = ksuid()
+    value = ksuid
+    options = Options.compile(prefix: "runtime_", dump_prefix: true)
+
+    assert :error = Type.cast(value, options)
+  end
+
   test "cast/2 is not valid for a charlist" do
     value = ~c"charlist"
     options = Options.default()
