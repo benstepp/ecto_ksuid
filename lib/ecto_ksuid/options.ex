@@ -7,13 +7,15 @@ defmodule EctoKsuid.Options do
   """
 
   defstruct [
-    :prefix,
-    :config
+    :config,
+    :dump_prefix,
+    :prefix
   ]
 
   @type t() :: %__MODULE__{
-          prefix: String.t() | :inferred,
-          config: map()
+          config: map(),
+          dump_prefix: boolean(),
+          prefix: String.t() | :inferred
         }
 
   @doc """
@@ -24,8 +26,9 @@ defmodule EctoKsuid.Options do
 
   def compile(opts) when is_list(opts) do
     %__MODULE__{
-      prefix: option_prefix(opts),
-      config: Map.new(opts)
+      config: Map.new(opts),
+      dump_prefix: dump_prefix(opts),
+      prefix: option_prefix(opts)
     }
   end
 
@@ -68,6 +71,37 @@ defmodule EctoKsuid.Options do
 
       :error ->
         :inferred
+    end
+  end
+
+  defp dump_prefix(opts) when is_list(opts) do
+    opts
+    |> Keyword.fetch(:dump_prefix)
+    |> case do
+      {:ok, dump_prefix} when is_boolean(dump_prefix) ->
+        dump_prefix
+
+      {:ok, invalid} ->
+        raise ArgumentError, """
+        EctoKsuid types must have a :dump_prefix option of a boolean, found #{inspect(invalid)}.
+
+        For example:
+
+          schema "users" do
+            field :id, EctoKsuid, dump_prefix: true
+            # ...
+          end
+
+        or
+
+          @primary_key {:id, EctoKsuid, dump_prefix: true}
+          schema "users" do
+            # ...
+          end
+        """
+
+      :error ->
+        false
     end
   end
 

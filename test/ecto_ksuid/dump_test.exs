@@ -50,6 +50,45 @@ defmodule EctoKsuid.DumpTest do
     assert {:ok, ^ksuid} = Type.dump(ksuid, @dumper, options)
   end
 
+  test "dump/3 keeps a string prefix with dump_prefix: true" do
+    ksuid = ksuid()
+    id = "test_#{ksuid}"
+    options = Options.compile(prefix: "test_", dump_prefix: true)
+
+    assert {:ok, ^id} = Type.dump(id, @dumper, options)
+  end
+
+  test "dump/3 keeps a string prefix without underscore with dump_prefix: true" do
+    ksuid = ksuid()
+    id = "test#{ksuid}"
+    options = Options.compile(prefix: "test", dump_prefix: true)
+
+    assert {:ok, ^id} = Type.dump(id, @dumper, options)
+  end
+
+  test "dump/3 keeps a number prefix with dump_prefix: true" do
+    ksuid = ksuid()
+    id = "1#{ksuid}"
+    options = Options.compile(prefix: "1", dump_prefix: true)
+
+    assert {:ok, ^id} = Type.dump(id, @dumper, options)
+  end
+
+  test "dump/3 keeps an emoji prefix with dump_prefix: true" do
+    ksuid = ksuid()
+    id = "❤️#{ksuid}"
+    options = Options.compile(prefix: "❤️", dump_prefix: true)
+
+    assert {:ok, ^id} = Type.dump(id, @dumper, options)
+  end
+
+  test "dump/3 removes nothing when no prefix with dump_prefix: true" do
+    ksuid = ksuid()
+    options = Options.compile(prefix: "", dump_prefix: true)
+
+    assert {:ok, ^ksuid} = Type.dump(ksuid, @dumper, options)
+  end
+
   test "dump/3 errors when passed an invalid value" do
     value = {}
     options = Options.default()

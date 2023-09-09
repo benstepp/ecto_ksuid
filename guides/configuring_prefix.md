@@ -78,3 +78,35 @@ defmodule MyApp.User do
   end
 end
 ```
+
+## Storing the Prefix
+
+It may be desirable to store the configured prefix in the database. By passing
+`dump_prefix: true`, the prefix will be included in the stored column.
+
+Note that the column in the database needs to have an appropraite length to
+store the prefix. If using the default suggestion of a `char(27)` column, you
+won't be able to store a prefix without changing the column type.
+
+> ### Warning {: .warning}
+>
+> If you decide to change the `prefix`, all existing rows with the old dumped
+> prefix will need to be migrated to the new prefix.
+
+### Example
+
+Here the "acct\_" prefix will be saved in the `id` column of the `accounts`
+table.
+
+```elixir
+# lib/my_app/account.ex
+defmodule MyApp.Account do
+  use Ecto.Schema
+
+  @primary_key {:id, EctoKsuid, autogenerate: true, prefix: "acct_", dump_prefix: true}
+
+  schema "accounts" do
+    # ...
+  end
+end
+```
