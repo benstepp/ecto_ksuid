@@ -123,6 +123,9 @@ defmodule EctoKsuid.Options do
 
   defp inferred_prefix(%Ecto.Association.BelongsTo{related: related, related_key: related_key}) do
     case related.__schema__(:type, related_key) do
+      {:parameterized, {EctoKsuid, %__MODULE__{prefix: prefix}}} when is_binary(prefix) ->
+        prefix
+
       {:parameterized, EctoKsuid, %__MODULE__{prefix: prefix}} when is_binary(prefix) ->
         prefix
 
